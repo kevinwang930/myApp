@@ -1,0 +1,21 @@
+{
+  "name": "my-template",
+  "productName": "my-template",
+  "version": "1.0.0",
+  "description": "Electron application boilerplate based on React, React Router, Webpack, React Hot Loader for rapid application development",
+  "main": "./dist/main/main.js",
+  "author": {
+    "name": "kevin wang",
+    "email": "kevinwang930@hotmail.com",
+    "url": "https://github.com/kevinwang930"
+  },
+  "scripts": {
+    "electron-rebuild": "node ../../.erb/scripts/electron-rebuild.js",
+    "link-modules": "node  ../../.erb/scripts/link-modules.js",
+    "postinstall": "npm run electron-rebuild && npm run link-modules"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "better-sqlite3": "^7.4.3"
+  }
+}

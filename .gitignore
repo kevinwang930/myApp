@@ -28,3 +28,10 @@ npm-debug.log.*
 *.css.d.ts
 *.sass.d.ts
 *.scss.d.ts
+
+build
+dist
+
+# python cache
+
+__pycache__

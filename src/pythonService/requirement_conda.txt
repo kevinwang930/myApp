@@ -1,0 +1,4 @@
+sqlalchemy
+pywin32
+openpyxl
+pytest

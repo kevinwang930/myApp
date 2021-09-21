@@ -12,7 +12,7 @@ module.exports = {
         browser: true,
         node: true,
     },
-    // parser: 'babel-eslint',
+    // parser: '@babel/eslint-parser',
     parserOptions: {
         ecmaVersion: 12,
         // sourceType: 'module',
@@ -27,7 +27,13 @@ module.exports = {
         'import/no-dynamic-require': 'off',
         // '@typescript-eslint/no-inferrable-types': 2,
         'react/jsx-filename-extension': [1, {extensions: ['.js', '.jsx']}],
+        'react/react-in-jsx-scope': 'off',
         'global-require': 'off',
+        'prefer-promise-reject-errors': 'off',
+        camelcase: 'off',
+        'no-restricted-syntax': 'off',
+        radix: 'off',
+        'consistent-return': 'off',
     },
     settings: {
         node: {

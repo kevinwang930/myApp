@@ -13,10 +13,11 @@ let resolveHtmlPath
 // database related
 let DB_DIR_PATH
 let SQLITE_PATH
-
+let GRPC_PROTO_PATH
 let RESOURCES_PATH
 
 let APP_ROOT_PATH
+let APP_PUBLIC_PATH
 
 let PYTHON_EXEC_PATH
 
@@ -27,14 +28,18 @@ let appSetting = {}
 function getPaths() {
     if (app.isPackaged) {
         APP_ROOT_PATH = path.dirname(app.getPath('exe'))
+        APP_PUBLIC_PATH = path.resolve(APP_ROOT_PATH, 'public')
+        GRPC_PROTO_PATH = path.resolve(APP_PUBLIC_PATH, 'jsPython.proto')
         RESOURCES_PATH = path.join(process.resourcesPath, 'assets')
         PYTHON_EXEC_PATH = path.join(
             APP_ROOT_PATH,
             'pythonService/pythonService.exe'
         )
-    } else {
+    } else if (process.env.NODE_ENV === 'development') {
         RESOURCES_PATH = path.join(__dirname, '../../assets')
+        GRPC_PROTO_PATH = path.resolve('public/jsPython.proto')
     }
+    process.env.GRPC_PROTO_PATH = GRPC_PROTO_PATH
 }
 
 function loadSetting() {

@@ -3,11 +3,15 @@ const {URL} = require('url')
 const path = require('path')
 const {spawn} = require('child_process')
 const {app} = require('electron')
+const {fs} = require('fs')
 const {mainLog, pythonLog} = require('./log')
 const {srcPath} = require('../../.erb/configs/webpack.paths')
 
 let startPythonService
 let resolveHtmlPath
+
+// database related
+let DB_DIR_PATH
 let SQLITE_PATH
 
 let RESOURCES_PATH
@@ -16,16 +20,54 @@ let APP_ROOT_PATH
 
 let PYTHON_EXEC_PATH
 
+let pythonService
+
+let appSetting = {}
+
+function getPaths() {
+    if (app.isPackaged) {
+        APP_ROOT_PATH = path.dirname(app.getPath('exe'))
+        RESOURCES_PATH = path.join(process.resourcesPath, 'assets')
+        PYTHON_EXEC_PATH = path.join(
+            APP_ROOT_PATH,
+            'pythonService/pythonService.exe'
+        )
+    } else {
+        RESOURCES_PATH = path.join(__dirname, '../../assets')
+    }
+}
+
+function loadSetting() {
+    if (APP_ROOT_PATH) {
+        const settingPath = path.resolve(APP_ROOT_PATH, 'setting.json')
+        if (fs.existsSync(settingPath)) {
+            appSetting = require(settingPath)
+        }
+    }
+}
+
+function getDbPaths() {
+    if (app.isPackaged) {
+        DB_DIR_PATH =
+            appSetting.DB_DIR_PATH || path.resolve(APP_ROOT_PATH, 'db')
+    } else {
+        DB_DIR_PATH = path.resolve(__dirname, '../../db')
+    }
+    SQLITE_PATH = path.resolve(DB_DIR_PATH, 'storage/order.sqlite')
+    process.env.SQLITE_PATH = SQLITE_PATH
+    process.env.DB_DIR_PATH = DB_DIR_PATH
+}
+
 function startPythonServicePacked() {
     mainLog.info('start python service from ', PYTHON_EXEC_PATH)
 
-    const cp = spawn(PYTHON_EXEC_PATH)
+    pythonService = spawn(PYTHON_EXEC_PATH)
 
-    cp.stdout.on('data', (data) => {
+    pythonService.stdout.on('data', (data) => {
         pythonLog.info(data.toString('utf8'))
     })
 
-    cp.stderr.on('data', (data) => {
+    pythonService.stderr.on('data', (data) => {
         pythonLog.info(data.toString('utf8'))
     })
 }
@@ -37,7 +79,7 @@ function startPythonServiceSrc(dbPath) {
         srcPath,
         'pythonService/async_server.py'
     )
-    const cp = spawn(
+    pythonService = spawn(
         `python`,
         [pythonServicePath]
 
@@ -47,32 +89,24 @@ function startPythonServiceSrc(dbPath) {
         // }
     )
 
-    cp.stdout.on('data', (data) => {
+    pythonService.stdout.on('data', (data) => {
         pythonLog.info(data.toString('utf8'))
     })
 
-    cp.stderr.on('data', (data) => {
+    pythonService.stderr.on('data', (data) => {
         pythonLog.info(data.toString('utf8'))
     })
 }
+
+getPaths()
+loadSetting()
+getDbPaths()
 
 if (app.isPackaged) {
-    RESOURCES_PATH = path.join(process.resourcesPath, 'assets')
-    APP_ROOT_PATH = path.dirname(app.getPath('exe'))
-    SQLITE_PATH = path.join(APP_ROOT_PATH, 'db/storage/order.sqlite')
-    PYTHON_EXEC_PATH = path.join(
-        APP_ROOT_PATH,
-        'pythonService/pythonService.exe'
-    )
-
     startPythonService = startPythonServicePacked
-} else {
-    RESOURCES_PATH = path.join(__dirname, '../../assets')
-    SQLITE_PATH = path.join(__dirname, '../../db')
+} else if (process.env.NODE_ENV === 'development') {
     startPythonService = startPythonServiceSrc
 }
-
-process.env.SQLITE_PATH = SQLITE_PATH
 
 if (process.env.NODE_ENV === 'development') {
     const port = process.env.PORT || 1212
@@ -87,8 +121,14 @@ if (process.env.NODE_ENV === 'development') {
     }
 }
 
+async function restartPythonService() {
+    await pythonService.kill()
+    startPythonService()
+}
+
 module.exports = {
     resolveHtmlPath,
     RESOURCES_PATH,
     startPythonService,
+    restartPythonService,
 }

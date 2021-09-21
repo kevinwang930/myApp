@@ -1,0 +1,12 @@
+{
+    "compilerOptions": {
+        "module": "none",
+        "moduleResolution":"node",
+        "target": "esnext",
+        "baseUrl": ".",
+        // "paths": {}
+    },
+    "exclude": [
+        "dist"
+    ]
+}

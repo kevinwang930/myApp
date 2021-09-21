@@ -81,6 +81,10 @@
         "filter": [
           "!**/srcStorage${/*}"
         ]
+      },
+      {
+          "from":"public",
+          "to":"public"
       }
     ],
     "publish": {

@@ -19,5 +19,6 @@
     "test/**/__snapshots__": true,
     "yarn.lock": true,
     "*.{css,sass,scss}.d.ts": true
-  }
+  },
+  "python.pythonPath": "D:\\miniconda3\\envs\\electron\\python.exe"
 }

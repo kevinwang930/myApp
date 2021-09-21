@@ -1,8 +1,8 @@
 {
-  "name": "my-template",
-  "productName": "my-template",
+  "name": "my-app",
+  "productName": "my-app",
   "version": "1.0.0",
-  "description": "Electron application boilerplate based on React, React Router, Webpack, React Hot Loader for rapid application development",
+  "description": "order management",
   "main": "./dist/main/main.js",
   "author": {
     "name": "kevin wang",

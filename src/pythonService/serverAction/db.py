@@ -2,7 +2,7 @@ from sqlalchemy import create_engine,text
 from pathlib import Path
 import logging
 import os
-dbPath = Path(os.getenv('DATABASE_PATH')).resolve()
+dbPath = Path(os.getenv('SQLITE_PATH')).resolve()
 logging.debug(f"sqlite database file path {dbPath}")
 engine = create_engine(f'sqlite:///{str(dbPath)}')
 
@@ -22,7 +22,7 @@ def getOrder_db(orderNo):
         if orderInfo.id:
             supplier = conn.execute(text(f'select id,name,address,contact,telephone,cellphone from suppliers where id = "{orderInfo.supplierId}"')).first()
             orderItems = conn.execute(text(f'select productNo,productName,description,price,quantity from orderItems where orderId = "{orderInfo.id}"')).all()
-         
+
             order = Order()
             order.orderInfo = orderInfo
             order.supplier = supplier
@@ -48,4 +48,3 @@ if __name__ == "__main__":
         result = conn.execute(text(f'SELECT name FROM sqlite_master WHERE type="table";'))
         print(result.all())
     # getOrderInfoFromDbWithOrderNo('01')
-    

@@ -25,9 +25,8 @@ import jsPython_pb2_grpc
 import sys
 import os
 
-load_dotenv()
+# load_dotenv()
 logging.basicConfig(level=os.getenv('LOG_LEVEL','INFO').upper(),format="[python] [%(levelname)s] (%(filename)s) %(funcName)s(%(lineno)d): %(message)s")
-sys.stdout.write('inside python service')
 
 from serverAction import orderExcelReport_openpyxl
 
@@ -38,9 +37,9 @@ class JsPythonServer(jsPython_pb2_grpc.CommunicationServicer):
             context: grpc.aio.ServicerContext) -> jsPython_pb2.HelloReply:
         print(request.name)
         return jsPython_pb2.HelloReply(message='Hello from server')
-        
+
     async def orderExcelReport(self,request,context):
-        
+
             result,message=orderExcelReport_openpyxl(request.orderNo)
             return jsPython_pb2.orderExportReply(result=result,message=message)
 
@@ -50,7 +49,7 @@ class JsPythonServer(jsPython_pb2_grpc.CommunicationServicer):
 async def serve() -> None:
     server = grpc.aio.server()
     jsPython_pb2_grpc.add_CommunicationServicer_to_server(JsPythonServer(), server)
-    listen_addr = 'localhost:50051' 
+    listen_addr = 'localhost:50051'
     server.add_insecure_port(listen_addr)
     logging.info(f"python server start on %s pid {os.getpid()}", listen_addr)
     sys.stdout.write(f"python server start on {listen_addr} pid {os.getpid()}")
@@ -64,9 +63,9 @@ async def serve() -> None:
         await server.stop(0)
 
 if __name__ == '__main__':
-    
+
     # logging.info(f'python server start {os.getpid()}')
-    env = os.getenv('PYTHON_ENV').upper()
+    env = os.getenv('PYTHON_ENV','production').upper()
     if env == 'DEBUG':
         # debugpy = importlib.import_module('debugpy')
         import debugpy

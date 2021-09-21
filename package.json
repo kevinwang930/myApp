@@ -28,7 +28,6 @@
       "node_modules",
       "package.json"
     ],
-
     "afterSign": ".erb/scripts/notarize.js",
     "mac": {
       "type": "distribution",
@@ -70,11 +69,18 @@
     "extraResources": [
       "./assets/**"
     ],
-    "extraFiles":[
-        {
-            "from":"pythonBuild/dist/pythonService",
-            "to":"pythonService"
-        }
+    "extraFiles": [
+      {
+        "from": "pythonBuild/dist/pythonService",
+        "to": "pythonService"
+      },
+      {
+        "from": "db",
+        "to": "db",
+        "filter": [
+          "!**/srcStorage${/*}"
+        ]
+      }
     ],
     "publish": {
       "provider": "github",
@@ -174,6 +180,7 @@
     "eslint-plugin-import": "^2.24.2",
     "eslint-plugin-jest": "^24.4.2",
     "eslint-plugin-json": "^3.1.0",
+    "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-prettier": "^4.0.0",
     "eslint-plugin-react": "^7.25.3",
     "eslint-plugin-react-hooks": "^4.2.0",

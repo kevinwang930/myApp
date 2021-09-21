@@ -1,0 +1,1 @@
+sqlite3 storage/order.sqlite .dump | ForEach-Object {$_.replace("CREATE TABLE","CREATE TABLE IF NOT EXISTS")} > dump/order2.sql 

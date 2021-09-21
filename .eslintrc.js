@@ -24,17 +24,14 @@ module.exports = {
         'no-unused-vars': 'off',
         // A temporary hack related to IDE not resolving correct package.json
         'import/no-extraneous-dependencies': 'off',
-
+        'import/no-dynamic-require': 'off',
         // '@typescript-eslint/no-inferrable-types': 2,
         'react/jsx-filename-extension': [1, {extensions: ['.js', '.jsx']}],
+        'global-require': 'off',
     },
-    // settings: {
-    //   "import/resolver": {
-    //     // See https://github.com/benmosher/eslint-plugin-import/issues/1396#issuecomment-575727774 for line below
-    //     node: {},
-    //     webpack: {
-    //       config: require.resolve("./.erb/configs/webpack.config.eslint.js"),
-    //     },
-    //   },
-    // },
+    settings: {
+        node: {
+            resolvePaths: [__dirname],
+        },
+    },
 }

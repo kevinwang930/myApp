@@ -1,51 +1,86 @@
-import React from 'react'
-import {MemoryRouter as Router, Switch, Route} from 'react-router-dom'
-import icon from '../../assets/icon.svg'
-import './App.global.css'
+import React, {useEffect} from 'react'
+import {MemoryRouter, Route} from 'react-router-dom'
+// import Route from 'react-router-cache-route'
+import {Layout} from 'antd'
 
-const Hello = () => {
-    return (
-        <div>
-            <div className="Hello">
-                <img width="200px" alt="icon" src={icon} />
-            </div>
-            <h1>electron-react-boilerplate</h1>
-            <div className="Hello">
-                <a
-                    href="https://electron-react-boilerplate.js.org/"
-                    target="_blank"
-                    rel="noreferrer"
-                >
-                    <button type="button">
-                        <span role="img" aria-label="books">
-                            📚
-                        </span>
-                        Read our docs
-                    </button>
-                </a>
-                <a
-                    href="https://github.com/sponsors/electron-react-boilerplate"
-                    target="_blank"
-                    rel="noreferrer"
-                >
-                    <button type="button">
-                        <span role="img" aria-label="books">
-                            🙏
-                        </span>
-                        Donate
-                    </button>
-                </a>
-            </div>
-        </div>
-    )
-}
+import {Orders} from './pages/orders'
+import {Suppliers} from './pages/suppliers'
+import {Database} from './pages/database'
+import {SupplierUpdate} from './pages/supplierUpdate'
+import {SupplierCreate} from './pages/supplierCreate'
+import {SupplierAnalysis} from './pages/supplierAnalysis'
+import {OrderCreate} from './pages/orderCreate'
+import {OrderDetail} from './pages/orderDetail'
+import {Products} from './pages/products'
+import {ProductCreate} from './pages/productCreate'
+import {ProductUpdate} from './pages/productUpdate'
+import {Data} from './pages/data'
+import {Test} from './pages/test'
+import {NavBar} from './pages/navBar'
+
+import {dbConnect, dbClose} from './api/db'
+// import {  initStore } from './app/store'
+import {log} from './api/log'
 
 export default function App() {
+    // useEffect(async ()=>{
+    //     await dbConnect()
+    //     await initStore()
+    //     log.debug('fetch db data finished')
+    //     return async ()=> {
+    //         await dbClose()
+    //         log.debug('db connect closed')
+    //     }
+    // },[])
+
     return (
-        <Router>
-            <Switch>
-                <Route path="/" component={Hello} />
-            </Switch>
-        </Router>
+        <MemoryRouter
+            initialEntries={['/orders']}
+            // initialIndex={1}
+        >
+            <Layout
+            // className="h-full"
+            >
+                <NavBar />
+
+                <main>
+                    <Route exact path="/orders" component={Orders} />
+                    <Route exact path="/orderCreate" component={OrderCreate} />
+                    <Route exact path="/orderDetail" component={OrderDetail} />
+                    <Route exact path="/suppliers" component={Suppliers} />
+                    <Route exact path="/database" component={Database} />
+                    <Route
+                        exact
+                        path="/supplierUpdate"
+                        component={SupplierUpdate}
+                    />
+                    <Route
+                        exact
+                        path="/supplierCreate"
+                        component={SupplierCreate}
+                    />
+                    <Route
+                        exact
+                        path="/SupplierAnalysis"
+                        component={SupplierAnalysis}
+                    />
+
+                    <Route exact path="/products" component={Products} />
+                    <Route
+                        exact
+                        path="/productCreate"
+                        component={ProductCreate}
+                    />
+                    <Route
+                        exact
+                        path="/productUpdate"
+                        component={ProductUpdate}
+                    />
+
+                    <Route exact path="/data" component={Data} />
+                    <Route exact path="/test" component={Test} />
+                </main>
+            </Layout>
+        </MemoryRouter>
     )
 }

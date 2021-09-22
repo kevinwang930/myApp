@@ -1,23 +1,24 @@
 {
-  "name": "my-template",
-  "productName": "my-template",
+  "name": "my-app",
+  "productName": "my-app",
   "description": "Electron application boilerplate based on React, React Router, Webpack, React Fast Refresh for rapid application development",
   "scripts": {
     "build": "node ./.erb/scripts/clean.js dist && concurrently npm:build:main npm:build:renderer npm:build:pythonService",
     "build:main": "cross-env NODE_ENV=production webpack --config ./.erb/configs/webpack.config.main.prod.js",
     "build:renderer": "cross-env NODE_ENV=production webpack --config ./.erb/configs/webpack.config.renderer.prod.js",
     "build:pythonService": "conda activate electron && pyinstaller -D -y -n pythonService --distpath pythonBuild/dist --workpath pythonBuild --specpath pythonBuild src/pythonService/async_server.py  ",
-    "build:renderer:dll":"cross-env NODE_ENV=development webpack --config ./.erb/configs/webpack.config.renderer.dev.dll.js",
     "rebuild": "electron-rebuild --parallel --types prod,dev,optional",
     "lint": "cross-env NODE_ENV=development eslint . --cache --ext .js,.jsx,.ts,.tsx",
     "package": "node ./.erb/scripts/clean.js build && npm run build && electron-builder build --publish never",
-    "postinstall": "electron-rebuild && electron-builder install-app-deps && cross-env NODE_ENV=development webpack --config ./.erb/configs/webpack.config.renderer.dev.dll.js",
+    "postinstall": "electron-rebuild && electron-builder install-app-deps",
     "start": "conda activate electron && node ./.erb/scripts/check-port-in-use.js && npm run start:renderer",
     "start:main": "cross-env NODE_ENV=development electron  ./src/main/main.js",
     "start:renderer": "cross-env NODE_ENV=development webpack serve --config ./.erb/configs/webpack.config.renderer.dev.js",
     "test": "jest",
     "archive": "git archive --format=zip --output=archive/latest.zip main",
-    "git": "node .erb/scripts/check-git-status.js"
+    "git": "node .erb/scripts/check-git-status.js",
+    "tailwind-build": "postcss src/renderer/app.global.css -o release/app/dist/index_postcss.css",
+    "tailwind-build-watch": "postcss src/index.css -o dist/index_postcss.css --watch"
   },
   "build": {
     "productName": "myApp",
@@ -83,8 +84,8 @@
         ]
       },
       {
-          "from":"public",
-          "to":"public"
+        "from": "public",
+        "to": "public"
       }
     ],
     "publish": {
@@ -154,18 +155,7 @@
     "@teamsupercell/typings-for-css-modules-loader": "^2.5.1",
     "@testing-library/jest-dom": "^5.14.1",
     "@testing-library/react": "^12.1.0",
-    "@types/enzyme": "^3.10.9",
-    "@types/enzyme-adapter-react-16": "^1.0.6",
-    "@types/history": "4.7.9",
-    "@types/jest": "^27.0.2",
-    "@types/node": "16.9.6",
-    "@types/react": "^17.0.24",
-    "@types/react-dom": "^17.0.9",
-    "@types/react-router": "^5.1.16",
-    "@types/react-router-dom": "^5.3.0",
-    "@types/react-test-renderer": "^17.0.1",
-    "@types/terser-webpack-plugin": "^5.0.4",
-    "@types/webpack-env": "^1.16.2",
+    "autoprefixer": "^10.3.4",
     "babel-loader": "^8.2.2",
     "babel-plugin-import": "^1.13.3",
     "chalk": "^4.1.2",
@@ -196,6 +186,8 @@
     "identity-obj-proxy": "^3.0.0",
     "jest": "^27.2.1",
     "mini-css-extract-plugin": "^2.3.0",
+    "postcss-cli": "^8.3.1",
+    "postcss-loader": "^6.1.1",
     "prettier": "^2.4.1",
     "react-refresh": "^0.10.0",
     "react-test-renderer": "^17.0.2",
@@ -203,6 +195,7 @@
     "sass": "^1.42.0",
     "sass-loader": "^12.1.0",
     "style-loader": "^3.3.0",
+    "tailwindcss": "^2.2.15",
     "terser-webpack-plugin": "^5.2.4",
     "url-loader": "^4.1.1",
     "webpack": "^5.53.0",

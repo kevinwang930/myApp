@@ -20,5 +20,11 @@
     "yarn.lock": true,
     "*.{css,sass,scss}.d.ts": true
   },
-  "python.pythonPath": "D:\\miniconda3\\envs\\electron\\python.exe"
+  "python.pythonPath": "D:\\miniconda3\\envs\\electron\\python.exe",
+
+  "css.validate": false,
+  "tailwindCSS.includeLanguages": {
+    "plaintext": "html"
+},
+
 }

@@ -19,6 +19,26 @@ if (process.env.NODE_ENV === 'production') {
     checkNodeEnv('development')
 }
 
+const manifest = path.resolve(webpackPaths.dllPath, 'renderer.json')
+const requiredByDLLConfig = module.parent.filename.includes(
+    'webpack.config.renderer.dev.dll'
+)
+
+/**
+ * Warn if the DLL is not built
+ */
+if (
+    !requiredByDLLConfig &&
+    !(fs.existsSync(webpackPaths.dllPath) && fs.existsSync(manifest))
+) {
+    console.log(
+        chalk.black.bgYellow.bold(
+            'The DLL files are missing. Sit back while we build them for you with "npm run build-dll"'
+        )
+    )
+    execSync('npm run postinstall')
+}
+
 const port = process.env.PORT || 1212
 
 module.exports = merge(baseConfig, {
@@ -208,6 +228,13 @@ module.exports = merge(baseConfig, {
     },
     plugins: [
         new webpack.NoEmitOnErrorsPlugin(),
+        requiredByDLLConfig
+            ? null
+            : new webpack.DllReferencePlugin({
+                  context: webpackPaths.dllPath,
+                  manifest: require(manifest),
+                  sourceType: 'var',
+              }),
 
         /**
          * Create global constants which can be configured at compile time.

@@ -7,6 +7,7 @@
     "build:main": "cross-env NODE_ENV=production webpack --config ./.erb/configs/webpack.config.main.prod.js",
     "build:renderer": "cross-env NODE_ENV=production webpack --config ./.erb/configs/webpack.config.renderer.prod.js",
     "build:pythonService": "conda activate electron && pyinstaller -D -y -n pythonService --distpath pythonBuild/dist --workpath pythonBuild --specpath pythonBuild src/pythonService/async_server.py  ",
+    "build:dll": "cross-env NODE_ENV=development webpack --config ./.erb/configs/webpack.config.renderer.dev.dll.js",
     "rebuild": "electron-rebuild --parallel --types prod,dev,optional",
     "lint": "cross-env NODE_ENV=development eslint . --cache --ext .js,.jsx,.ts,.tsx",
     "package": "node ./.erb/scripts/clean.js build && npm run build && electron-builder build --publish never",

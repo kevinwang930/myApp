@@ -1,7 +1,8 @@
 module.exports = {
     extends: [
-        'airbnb',
+        // 'airbnb',
         'prettier',
+        'eslint:recommended',
         'plugin:react/recommended',
         'plugin:import/recommended',
         'plugin:prettier/recommended',
@@ -11,6 +12,7 @@ module.exports = {
     env: {
         browser: true,
         node: true,
+        es12: true,
     },
     // parser: '@babel/eslint-parser',
     parserOptions: {
@@ -41,9 +43,9 @@ module.exports = {
         'react/jsx-props-no-spreading': 'off',
         'no-use-before-define': 'off',
     },
-    settings: {
-        node: {
-            resolvePaths: [__dirname],
-        },
-    },
+    // settings: {
+    //     node: {
+    //         resolvePaths: [__dirname],
+    //     },
+    // },
 }

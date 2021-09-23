@@ -4,26 +4,16 @@
 
 const webpack = require('webpack')
 const path = require('path')
-const {merge} = require('webpack-merge')
-const baseConfig = require('./webpack.config.base')
+const {dllPackages} = require('./webpack.config.base')
 const webpackPaths = require('./webpack.paths')
-const {dependencies} = require('../../package.json')
+// const {dependencies} = require('../../package.json')
 const checkNodeEnv = require('../scripts/check-node-env')
-
-let filteredDependencies = Object.keys(dependencies || {}).filter((name) => {
-    if (name.includes('better-sqlite3')) {
-        return false
-    } else if (name.includes('ant')) {
-        return false
-    }
-    return true
-})
 
 checkNodeEnv('development')
 
 const dist = webpackPaths.dllPath
 
-module.exports = merge(baseConfig, {
+module.exports = {
     context: webpackPaths.rootPath,
 
     devtool: 'eval',
@@ -38,7 +28,7 @@ module.exports = merge(baseConfig, {
     module: require('./webpack.config.renderer.dev').module,
 
     entry: {
-        renderer: filteredDependencies,
+        renderer: dllPackages,
     },
 
     output: {
@@ -68,15 +58,5 @@ module.exports = merge(baseConfig, {
         new webpack.EnvironmentPlugin({
             NODE_ENV: 'development',
         }),
-
-        new webpack.LoaderOptionsPlugin({
-            debug: true,
-            options: {
-                context: webpackPaths.srcPath,
-                output: {
-                    path: webpackPaths.dllPath,
-                },
-            },
-        }),
     ],
-})
+}

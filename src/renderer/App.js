@@ -21,7 +21,7 @@ import {NavBar} from './pages/navBar'
 import {dbConnect, dbClose} from './api/db'
 // import {  initStore } from './app/store'
 import {log} from './api/log'
-import './App.global.css'
+// import './App.global.css'
 
 export default function App() {
     // useEffect(async ()=>{

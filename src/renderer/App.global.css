@@ -12,7 +12,7 @@
 } */
 .side {
     position:fixed;
-    
+
     width: 192px;
 }
 
@@ -29,7 +29,7 @@
 }
 
 main {
-    
+
     margin-left: 192px;
     padding-left: 10px;
     padding-right: 10px;
@@ -39,11 +39,11 @@ main {
     /* overflow-y: scroll; */
 }
 header {
-    @apply  h-8 
+    height: 2rem
 }
 main section{
 
-    @apply mt-10 
+    margin-top: 2.5rem
 
 }
 
@@ -63,11 +63,23 @@ section.reportContent {
 }
 
 h1 {
-    @apply my-10  text-xl font-bold
+    margin-top: 2.5rem/* 40px */;
+    margin-bottom: 2.5rem/* 40px */;
+    font-size: 1.25rem/* 20px */;
+    line-height: 1.75rem/* 28px */
+    font-weight: 700;
 }
 
 h2 {
-    @apply my-5 py-5 text-lg font-semibold
+    margin-top: 1.25rem/* 20px */;
+    margin-bottom: 1.25rem/* 20px */;
+    padding-top: 1.25rem/* 20px */;
+    padding-bottom: 1.25rem/* 20px */;
+    font-size: 1.125rem/* 18px */;
+    line-height: 1.75rem/* 28px */;
+    font-weight: 600;
+
+
 }
 
 

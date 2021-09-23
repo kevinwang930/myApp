@@ -4,9 +4,8 @@ const webpack = require('webpack')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const chalk = require('chalk')
 const {merge} = require('webpack-merge')
-
 const {spawn, execSync} = require('child_process')
-const baseConfig = require('./webpack.config.base')
+const {dllExternals} = require('./webpack.config.base')
 const webpackPaths = require('./webpack.paths')
 const checkNodeEnv = require('../scripts/check-node-env')
 const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin')
@@ -39,19 +38,21 @@ if (
     execSync('npm run postinstall')
 }
 
+console.log(dllExternals)
+
 const port = process.env.PORT || 1212
 
-module.exports = merge(baseConfig, {
+module.exports = {
     devtool: 'inline-source-map',
 
     mode: 'development',
-
     target: 'electron-renderer',
     // externalsPresets: {
     //     electronRenderer: true,
     //     node: true,
     // },
     externals: {
+        // ...dllExternals,
         'better-sqlite3': 'commonjs better-sqlite3',
     },
     entry: [
@@ -301,4 +302,4 @@ module.exports = merge(baseConfig, {
                 .on('error', (spawnError) => console.error(spawnError))
         },
     },
-})
+}

@@ -1,6 +1,6 @@
 import React, {useEffect} from 'react'
-import {MemoryRouter, Route} from 'react-router-dom'
-// import Route from 'react-router-cache-route'
+import {MemoryRouter} from 'react-router-dom'
+import Route from 'react-router-cache-route'
 import {Layout} from 'antd'
 
 import {Orders} from './pages/orders'

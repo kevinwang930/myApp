@@ -2,7 +2,13 @@ import React from 'react'
 import {useDispatch, useSelector} from 'react-redux'
 
 import {Menu} from 'antd'
-import {ProfileOutlined, TeamOutlined, MenuOutlined} from '@ant-design/icons'
+import {
+    ProfileOutlined,
+    TeamOutlined,
+    MenuOutlined,
+    DatabaseOutlined,
+    BugOutlined,
+} from '@ant-design/icons'
 import {NavLink} from 'react-router-dom'
 import {setSelectedPage, getSelectedPage} from '../selectors/menuSlice'
 
@@ -28,7 +34,7 @@ export function NavBar(props) {
             // onClick={this.handleClick}
             // defaultOpenKeys={['sub1', 'sub2', 'sub3', 'sub4']}
             // defaultSelectedKeys={['orders']}
-            selectedKeys={selectedPage ? selectedPage : 'orders'}
+            selectedKeys={selectedPage || 'orders'}
             onClick={onPageChange}
             mode="inline"
             className="menu noPrint"
@@ -70,18 +76,18 @@ export function NavBar(props) {
                 修改
             </NavSubMenu>
         </Menu.Item> */}
-            <Menu.Item key="data" icon={<ProfileOutlined />}>
+            {/* <Menu.Item key="data" icon={<ProfileOutlined />}>
                 <NavLink to="/data">
                     <span>数据分析</span>
                 </NavLink>
-            </Menu.Item>
-            <Menu.Item key="database" icon={<ProfileOutlined />}>
+            </Menu.Item> */}
+            <Menu.Item key="database" icon={<DatabaseOutlined />}>
                 <NavLink to="/database">
                     <span>数据库</span>
                 </NavLink>
             </Menu.Item>
 
-            <Menu.Item key="test" icon={<ProfileOutlined />}>
+            <Menu.Item key="test" icon={<BugOutlined />}>
                 <NavLink to="/test">
                     <span>测试</span>
                 </NavLink>

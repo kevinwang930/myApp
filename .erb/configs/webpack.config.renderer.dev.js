@@ -6,12 +6,13 @@ const chalk = require('chalk')
 const {merge} = require('webpack-merge')
 
 const {spawn, execSync} = require('child_process')
+
+const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin')
+const {BundleAnalyzerPlugin} = require('webpack-bundle-analyzer')
+
 const baseConfig = require('./webpack.config.base')
 const webpackPaths = require('./webpack.paths')
 const checkNodeEnv = require('../scripts/check-node-env')
-const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin')
-const BundleAnalyzerPlugin =
-    require('webpack-bundle-analyzer').BundleAnalyzerPlugin
 
 // When an ESLint server is running, we can't set the NODE_ENV so we'll check if it's
 // at the dev webpack config is not accidentally run in a production environment

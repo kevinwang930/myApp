@@ -3,29 +3,22 @@ const {URL} = require('url')
 const path = require('path')
 const {spawn} = require('child_process')
 const {app} = require('electron')
-const {fs} = require('fs')
+const fs = require('fs')
 const {mainLog, pythonLog} = require('./log')
 const {srcPath} = require('../../.erb/configs/webpack.paths')
-
-let startPythonService
-let resolveHtmlPath
+const {store} = require('./setting')
 
 // database related
-let DB_DIR_PATH
-let SQLITE_PATH
+
 let GRPC_PROTO_PATH
 let RESOURCES_PATH
-
 let APP_ROOT_PATH
 let APP_PUBLIC_PATH
-
 let PYTHON_EXEC_PATH
 
 let pythonService
 
-let appSetting = {}
-
-function getPaths() {
+function initPathsAndEnv() {
     if (app.isPackaged) {
         APP_ROOT_PATH = path.dirname(app.getPath('exe'))
         APP_PUBLIC_PATH = path.resolve(APP_ROOT_PATH, 'public')
@@ -42,31 +35,15 @@ function getPaths() {
     process.env.GRPC_PROTO_PATH = GRPC_PROTO_PATH
 }
 
-function loadSetting() {
-    if (APP_ROOT_PATH) {
-        const settingPath = path.resolve(APP_ROOT_PATH, 'setting.json')
-        if (fs.existsSync(settingPath)) {
-            appSetting = require(settingPath)
-        }
-    }
-}
-
-function getDbPaths() {
-    if (app.isPackaged) {
-        DB_DIR_PATH =
-            appSetting.DB_DIR_PATH || path.resolve(APP_ROOT_PATH, 'db')
-    } else {
-        DB_DIR_PATH = path.resolve(__dirname, '../../db')
-    }
-    SQLITE_PATH = path.resolve(DB_DIR_PATH, 'storage/order.sqlite')
-    process.env.SQLITE_PATH = SQLITE_PATH
-    process.env.DB_DIR_PATH = DB_DIR_PATH
-}
-
-function startPythonServicePacked() {
+function startPythonServicePacked(sqliteFilePath) {
     mainLog.info('start python service from ', PYTHON_EXEC_PATH)
 
-    pythonService = spawn(PYTHON_EXEC_PATH)
+    pythonService = spawn(PYTHON_EXEC_PATH, {
+        env: {
+            ...process.env,
+            SQLITE_PATH: sqliteFilePath,
+        },
+    })
 
     pythonService.stdout.on('data', (data) => {
         pythonLog.info(data.toString('utf8'))
@@ -77,7 +54,7 @@ function startPythonServicePacked() {
     })
 }
 
-function startPythonServiceSrc(dbPath) {
+function startPythonServiceSrc(sqliteFilePath) {
     mainLog.info('start python service')
 
     const pythonServicePath = path.resolve(
@@ -86,7 +63,13 @@ function startPythonServiceSrc(dbPath) {
     )
     pythonService = spawn(
         `python`,
-        [pythonServicePath]
+        [pythonServicePath],
+        {
+            env: {
+                ...process.env,
+                SQLITE_PATH: sqliteFilePath,
+            },
+        }
 
         // renderer process is a demon process, may not use inherit
         // {
@@ -103,33 +86,39 @@ function startPythonServiceSrc(dbPath) {
     })
 }
 
-getPaths()
-loadSetting()
-getDbPaths()
+function startPythonService() {
+    const sqliteFilePath = store.get('sqlite.filePath', null)
+    if (!sqliteFilePath || !fs.existsSync(sqliteFilePath)) {
+        mainLog.warn(
+            `sqlite file ${sqliteFilePath} doesn't exist, quite python service`
+        )
+        return
+    }
 
-if (app.isPackaged) {
-    startPythonService = startPythonServicePacked
-} else if (process.env.NODE_ENV === 'development') {
-    startPythonService = startPythonServiceSrc
+    if (app.isPackaged) {
+        startPythonServicePacked(sqliteFilePath)
+    } else if (process.env.NODE_ENV === 'development') {
+        startPythonServiceSrc(sqliteFilePath)
+    }
 }
 
-if (process.env.NODE_ENV === 'development') {
-    const port = process.env.PORT || 1212
-    resolveHtmlPath = (htmlFileName) => {
+function resolveHtmlPath(htmlFileName) {
+    if (process.env.NODE_ENV === 'development') {
+        const port = process.env.PORT || 1212
+
         const url = new URL(`http://localhost:${port}`)
         url.pathname = htmlFileName
         return url.href
     }
-} else {
-    resolveHtmlPath = (htmlFileName) => {
-        return `file://${path.resolve(__dirname, '../renderer/', htmlFileName)}`
-    }
+    return `file://${path.resolve(__dirname, '../renderer/', htmlFileName)}`
 }
 
 async function restartPythonService() {
     await pythonService.kill()
     startPythonService()
 }
+
+initPathsAndEnv()
 
 module.exports = {
     resolveHtmlPath,

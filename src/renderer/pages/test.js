@@ -4,7 +4,7 @@ import ReactDOM from 'react-dom'
 import {Table, Input, Button, Space, message} from 'antd'
 // import Highlighter from 'react-highlight-words';
 import {SearchOutlined} from '@ant-design/icons'
-import {log} from '../log'
+import {rendererLog} from '../log'
 import {client} from '../api/grpcClient'
 
 function onClick() {

@@ -1,19 +1,17 @@
 import {ipcRenderer} from 'electron'
-import React, {useEffect} from 'react'
+import React from 'react'
 import path from 'path'
 import {Button, notification} from 'antd'
 import {
     sqlite_reset,
     sqlite_dump,
-    sqlite_resetAndLoadSchema,
     sqlite_readDump,
-    dbConnect,
+    sqlite_connect,
 } from '../api/db'
 
 import {clearStoreAndFetchData} from '../app/store'
-import {log} from '../log'
 
-export function Database(props) {
+export function Database() {
     const reset = async () => {
         try {
             sqlite_reset()
@@ -24,37 +22,8 @@ export function Database(props) {
                 duration: 0,
                 key: 'databaseDump',
             })
-            dbConnect()
+            sqlite_connect()
         }
-        await clearStoreAndFetchData()
-    }
-
-    const resetAndLoadSchema = async () => {
-        try {
-            sqlite_resetAndLoadSchema()
-
-            notification.success({
-                message: '数据库重置加载schema成功',
-                description: (
-                    <p>
-                        schema {process.env.DATABASE_SCHEMAPATH}
-                        <br />
-                        数据库 {process.env.DATABASE_PATH}
-                    </p>
-                ),
-                duration: 0,
-                key: 'databaseDump',
-            })
-        } catch (e) {
-            notification.error({
-                message: '数据库重置加载schema失败',
-                description: e.message,
-                duration: 0,
-                key: 'databaseDump',
-            })
-            dbConnect()
-        }
-
         await clearStoreAndFetchData()
     }
 
@@ -128,7 +97,6 @@ export function Database(props) {
         <div>
             <div className="flexChildren">
                 <Button onClick={reset}>重置</Button>
-                <Button onClick={resetAndLoadSchema}>重置更新schema</Button>
             </div>
 
             <div className="flexChildren">

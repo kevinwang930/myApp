@@ -1,16 +1,27 @@
 // import 'dotenv/config'
 import electronLog from 'electron-log'
 
-export let log
+export let rendererLog
+export let sqliteLog
 if (process.env.JEST) {
-    log = console
+    rendererLog = console
+    sqliteLog = console
 } else {
-    log = electronLog.create('log')
-    log.transports.file.level = false
-    log.transports.console.level = false
+    rendererLog = electronLog.create('rendererLog')
+    rendererLog.transports.file.level = false
+    rendererLog.transports.console.level = false
     // process.env.LOG_LEVEL.toLowerCase()
     // log.transports.console.format = '[{h}:{i}:{s}] [renderer] [{level}] {text}'
-    if (log.transports.ipc) {
-        log.transports.ipc.level = process.env.LOG_LEVEL.toLowerCase()
+    if (rendererLog.transports.ipc) {
+        rendererLog.transports.ipc.level = process.env.LOG_LEVEL.toLowerCase()
+    }
+
+    sqliteLog = electronLog.create('sqliteLog')
+    sqliteLog.transports.file.level = false
+    sqliteLog.transports.console.level = false
+    // process.env.LOG_LEVEL.toLowerCase()
+    // log.transports.console.format = '[{h}:{i}:{s}] [renderer] [{level}] {text}'
+    if (sqliteLog.transports.ipc) {
+        sqliteLog.transports.ipc.level = process.env.LOG_LEVEL.toLowerCase()
     }
 }

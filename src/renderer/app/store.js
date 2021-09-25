@@ -6,7 +6,7 @@ import orderReducer, {fetchOrders} from '../selectors/ordersSlice'
 import productReducer, {fetchProducts} from '../selectors/productsSlice'
 import orderItemReducer, {fetchOrderItems} from '../selectors/orderItemsSlice'
 import {checkDataVersion} from '../api/db'
-import {log} from '../log'
+import {rendererLog} from '../log'
 
 const combinedReducer = combineReducers({
     suppliers: supplierReducer,
@@ -19,7 +19,7 @@ const combinedReducer = combineReducers({
 const rootReducer = (state, action) => {
     if (action.type === 'clearStore') {
         // check for action type
-        log.debug('store cleared')
+        rendererLog.debug('store cleared')
         state = undefined
     }
     return combinedReducer(state, action)
@@ -31,7 +31,7 @@ export const store = configureStore({
 
 export async function clearStoreAndFetchData() {
     store.dispatch({type: 'clearStore'})
-    log.debug('fetch data to store')
+    rendererLog.debug('fetch data to store')
     await store.dispatch(fetchSuppliers()).unwrap()
     await store.dispatch(fetchOrders()).unwrap()
     await store.dispatch(fetchProducts()).unwrap()

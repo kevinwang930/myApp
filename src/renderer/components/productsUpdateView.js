@@ -6,7 +6,7 @@ import {
     PlusOutlined,
     PlusCircleOutlined,
 } from '@ant-design/icons'
-import {log} from '../log'
+import {rendererLog} from '../log'
 import {useDispatch, useSelector} from 'react-redux'
 import {trimWhitespace, productNoUpdateValidator} from '../auxiliary'
 

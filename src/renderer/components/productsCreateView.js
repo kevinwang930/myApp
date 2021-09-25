@@ -1,9 +1,10 @@
 import React, {useEffect, useState} from 'react'
+import {useDispatch, useSelector} from 'react-redux'
 import {Form, Input, Button, message, Select, Space} from 'antd'
 import {createProducts} from '../selectors/productsSlice'
 import {selectSupplierOptions} from '../selectors/suppliersSlice'
-import {useDispatch, useSelector} from 'react-redux'
-import {log} from '../api/log'
+
+import {log} from '../log'
 
 import {strict as assert} from 'assert'
 import {MinusCircleOutlined, PlusOutlined} from '@ant-design/icons'

@@ -15,7 +15,7 @@ import {createProducts} from '../selectors/productsSlice'
 import {selectSupplierOptions} from '../selectors/suppliersSlice'
 import {trimWhitespace, formProductNoValidator} from '../auxiliary'
 import {ProductsUpdateView} from '../components/productsUpdateView'
-import {log} from '../api/log'
+import {log} from '../log'
 
 const FormItem = Form.Item
 const {TextArea} = Input

@@ -11,7 +11,7 @@ import {
 } from '../api/db'
 
 import {clearStoreAndFetchData} from '../app/store'
-import {log} from '../api/log'
+import {log} from '../log'
 
 export function Database(props) {
     const reset = async () => {

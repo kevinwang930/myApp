@@ -1,5 +1,6 @@
 // import 'dotenv/config'
-import electronLog  from 'electron-log'
+import electronLog from 'electron-log'
+
 export let log
 if (process.env.JEST) {
     log = console
@@ -13,10 +14,3 @@ if (process.env.JEST) {
         log.transports.ipc.level = process.env.LOG_LEVEL.toLowerCase()
     }
 }
-
-
-
-
-
-
-

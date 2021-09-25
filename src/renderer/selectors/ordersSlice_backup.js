@@ -1,29 +1,35 @@
-import { createSlice, createAsyncThunk, createEntityAdapter, createSelector } from '@reduxjs/toolkit'
-import { getOrders,  updateOrderById as updateOrderById_db, deleteOrderById as deleteOrderById_db,deleteOrderItemById as deleteOrderItemById_db } from '../api/db'
-import { log } from '../api/log'
+import {
+    createSlice,
+    createAsyncThunk,
+    createEntityAdapter,
+    createSelector,
+} from '@reduxjs/toolkit'
+import {
+    getOrders,
+    updateOrderById as updateOrderById_db,
+    deleteOrderById as deleteOrderById_db,
+    deleteOrderItemById as deleteOrderItemById_db,
+} from '../api/db'
+import {log} from '../log'
 
-
-export const fetchOrders = createAsyncThunk(
-    'orders/fetchOrders', 
-    async () => {
-        const response = await getOrders()
-        return response
+export const fetchOrders = createAsyncThunk('orders/fetchOrders', async () => {
+    const response = await getOrders()
+    return response
 })
-
 
 export const updateOrder = createAsyncThunk(
     'orders/updateOrder',
-    async ({ id, changes }, thunkAPI) => {
+    async ({id, changes}, thunkAPI) => {
         log.debug('changed values in slice', changes)
         const response = await updateOrderById_db(id, changes)
 
-        return { id: id, changes: changes }
+        return {id: id, changes: changes}
     }
 )
 
 export const deleteOrder = createAsyncThunk(
     'orders/deleteOrder',
-    async ({ id }, thunkAPI) => {
+    async ({id}, thunkAPI) => {
         try {
             await deleteOrderById_db(id)
             return id
@@ -33,15 +39,11 @@ export const deleteOrder = createAsyncThunk(
     }
 )
 
-
-
 const ordersAdapter = createEntityAdapter()
 
-const initialState = ordersAdapter.getInitialState({ 
+const initialState = ordersAdapter.getInitialState({
     orderIdInDetailPage: null,
-    id:0
-
-
+    id: 0,
 })
 
 const ordersSlice = createSlice({
@@ -52,21 +54,20 @@ const ordersSlice = createSlice({
             // log.debug('action.payload', action.payload)
             state.orderIdInDetailPage = action.payload
         },
-        
-        UpdateOrderRedux(state,action) {
-            ordersAdapter.updateOne(state,action.payload)
+
+        UpdateOrderRedux(state, action) {
+            ordersAdapter.updateOne(state, action.payload)
         },
         addOrderStoreId(state) {
             state.id = state.id + 1
         },
         insertOrderRedux(state, action) {
             ordersAdapter.addOne(state, action.payload)
-        }
-
+        },
     },
     extraReducers: {
         [fetchOrders.fulfilled]: ordersAdapter.setAll,
-        
+
         [updateOrder.fulfilled]: (state, action) => {
             ordersAdapter.updateOne(state, action.payload)
         },
@@ -74,49 +75,48 @@ const ordersSlice = createSlice({
             // log.debug('delete order payload ', action.payload)
             const id = action.payload
             ordersAdapter.removeOne(state, id)
-
-        }
-    }
+        },
+    },
 })
-
 
 export const {
     selectAll: selectAllOrders,
     selectById: selectOrderById,
     selectIds: selectAllOrderIds,
-    selectEntities:selectAllOrdersDict
-} = ordersAdapter.getSelectors(state => state.orders)
+    selectEntities: selectAllOrdersDict,
+} = ordersAdapter.getSelectors((state) => state.orders)
 
 export const selectOrderIdInDetailPage = (state) => {
     return state.orders.orderIdInDetailPage
 }
 
-export const selectOrderStoreId = (state)=> {
+export const selectOrderStoreId = (state) => {
     return state.orders.id
 }
 
-export const { setOrderIdInDetailPage,UpdateOrderRedux,setOrderUpdateId,insertOrderRedux} = ordersSlice.actions
-
-
+export const {
+    setOrderIdInDetailPage,
+    UpdateOrderRedux,
+    setOrderUpdateId,
+    insertOrderRedux,
+} = ordersSlice.actions
 
 export const selectOrdersBySupplierId = createSelector(
     selectAllOrders,
-    (state,supplierId)=>supplierId,
-    (orders,supplierId)=>{
+    (state, supplierId) => supplierId,
+    (orders, supplierId) => {
         if (supplierId) {
-            return orders.filter(order => order.supplierId == supplierId)
+            return orders.filter((order) => order.supplierId == supplierId)
         } else {
             return []
         }
-        
     }
-
 )
 
 export const selectOrderByIdAllowNull = createSelector(
-    (_,id)=>id,
+    (_, id) => id,
     selectAllOrdersDict,
-    (id,Dict)=> {
+    (id, Dict) => {
         if (id) {
             return Dict[id]
         } else {
@@ -125,7 +125,4 @@ export const selectOrderByIdAllowNull = createSelector(
     }
 )
 
-
 export default ordersSlice.reducer
-
-

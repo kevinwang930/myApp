@@ -7,9 +7,10 @@ import {notification} from 'antd'
 import {Provider} from 'react-redux'
 
 import App from './app'
+
 import {store, clearStoreAndFetchData} from './app/store'
 
-import {log} from './api/log'
+import {log} from './log'
 import {dbConnect, dbClose} from './api/db'
 
 log.info(`node_env in ${process.env.NODE_ENV} mode `)

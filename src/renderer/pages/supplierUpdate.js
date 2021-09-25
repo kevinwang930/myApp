@@ -2,7 +2,7 @@ import React, {useEffect} from 'react'
 import {Form, Input, Button, Select, message} from 'antd'
 import {strict as assert} from 'assert'
 import {useDispatch, useSelector} from 'react-redux'
-import {log} from '../api/log'
+import {log} from '../log'
 
 import {
     updateSupplier,

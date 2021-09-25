@@ -3,7 +3,7 @@ import {exec, execSync} from 'child_process'
 import path from 'path'
 import fs from 'fs'
 import _ from 'lodash'
-import {log} from './log'
+import {log} from '../log'
 
 const dbPath = process.env.SQLITE_PATH
 const dumpPath = process.env.DATABASE_DUMPPATH

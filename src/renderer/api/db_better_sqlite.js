@@ -1,5 +1,4 @@
-
-import { log } from './log'
+import {log} from '../log'
 import path from 'path'
 import _ from 'lodash'
 import Database from 'better-sqlite3'
@@ -8,62 +7,61 @@ let db
 let dataVersion
 
 export function dbConnect() {
-	db = new Database(dbPath, {
-		fileMustExist: true,
-		verbose: log.debug
-	})
-	getDataVersion()
+    db = new Database(dbPath, {
+        fileMustExist: true,
+        verbose: log.debug,
+    })
+    getDataVersion()
 }
 
 export function dbClose() {
-	db.close()
+    db.close()
 }
 
 export async function getSqliteVersion() {
-	let stmt = db.prepare("select sqlite_version()")
-	return stmt.get()
+    let stmt = db.prepare('select sqlite_version()')
+    return stmt.get()
 }
 
-export  function getDataVersion() {
-	dataVersion = db.pragma("data_version",{simple:true})
-	return dataVersion
-
+export function getDataVersion() {
+    dataVersion = db.pragma('data_version', {simple: true})
+    return dataVersion
 }
 
 export function getForeignKeyStatus() {
-	return db.pragma('foreign_keys',{simple:true})
+    return db.pragma('foreign_keys', {simple: true})
 }
 
-export  function checkDataVersion() {
-	const version = db.pragma("data_version", { simple: true })
-	if (dataVersion === version) {
-		return true
-	} else {
-		dataVersion = version
-		return false}
+export function checkDataVersion() {
+    const version = db.pragma('data_version', {simple: true})
+    if (dataVersion === version) {
+        return true
+    } else {
+        dataVersion = version
+        return false
+    }
 }
 
-
-
-export  function getOrders() {
-	
-		let statement =   db.prepare(`
+export function getOrders() {
+    let statement = db.prepare(`
 		select orders.id,orderNo,supplierId,
 		sum(price*quantity) as totalAmount,
 		group_concat(orderItems.id) as orderItemIds
-		from orders 
+		from orders
 			join orderitems on orderId = orders.id
 			group by orders.id
 
 		`)
-		let resultArray = statement.all()
-		return resultArray.map((order)=>{return {
-			...order,
-			orderItemIds:order.orderItemIds.split(',').map((idString)=>parseInt(idString))
-		}})
+    let resultArray = statement.all()
+    return resultArray.map((order) => {
+        return {
+            ...order,
+            orderItemIds: order.orderItemIds
+                .split(',')
+                .map((idString) => parseInt(idString)),
+        }
+    })
 }
-		
-
 
 // export async function checkOrdersBySupplier(supplierId) {
 // 	try {
@@ -81,7 +79,6 @@ export  function getOrders() {
 // 		return e
 // 	}
 // }
-
 
 // export async function checkOrderNo(value) {
 // 	const result = await Order.findOne({
@@ -123,7 +120,7 @@ export  function getOrders() {
 // 		delete from orders where id = ${id}
 // 		`,
 // 		{
-// 			type: QueryTypes.DELETE 
+// 			type: QueryTypes.DELETE
 // 		})
 // 	} catch (e) {
 // 		return Promise.reject(e.message)
@@ -134,9 +131,9 @@ export  function getOrders() {
 // 	try {
 // 		let result =  await sequelize.query(`
 // 		select sum(price*quantity) as totalAmount
-// 		from orders 
+// 		from orders
 // 			join orderitems on orderId = orders.id
-// 			where orders.id = :id	
+// 			where orders.id = :id
 // 			group by orders.id
 // 		`, {
 // 			type: QueryTypes.SELECT,
@@ -146,7 +143,7 @@ export  function getOrders() {
 // 	} catch(e) {
 // 		return Promise.reject(e.message)
 // 	}
-	
+
 // }
 
 // export async function getSuppliers() {
@@ -157,10 +154,8 @@ export  function getOrders() {
 // 		return suppliersText
 // 	}catch (error) {
 // 		log.error('failed to get suppliers',error)
-// 	}  
+// 	}
 // }
-
-
 
 // export async function createSupplier(values) {
 
@@ -232,8 +227,6 @@ export  function getOrders() {
 // 	})
 // }
 
-
-
 // export async function createProduct(values) {
 
 // 	const newProduct = await Product.create(values)
@@ -250,7 +243,7 @@ export  function getOrders() {
 // 			let product = await Product.create(productInfo, { transaction: t })
 // 			productInfo.id = product.id
 // 			productsArray.push(productInfo)
-// 		}	
+// 		}
 // 		await t.commit()
 
 // 		return productsArray
@@ -258,7 +251,7 @@ export  function getOrders() {
 // 		await t.rollback()
 // 		return Promise.reject(e.message)
 // 	}
-	
+
 // }
 
 // export async function updateProductByPk(id, values) {
@@ -306,7 +299,6 @@ export  function getOrders() {
 // 	}
 // }
 
-
 // export async function checkProductsBySupplier(supplierId) {
 // 	try {
 // 		let products = await Product.findAll({
@@ -331,8 +323,6 @@ export  function getOrders() {
 // 	return {productIds:productIds,orderIds:orderIds}
 // }
 
-
-
 // export const getOrderItems = async () => {
 // 	try {
 // 		let orderItems = await sequelize.query(`select id,orderId,productId,productNo,productName,description,price,quantity
@@ -342,7 +332,7 @@ export  function getOrders() {
 // 	} catch(e) {
 // 		return Promise.reject(e.message)
 // 	}
-// } 
+// }
 
 // export const deleteOrderItem = async (id) => {
 // 	try {
@@ -379,7 +369,7 @@ export  function getOrders() {
 // export const getSupplierOrderItemsSummary = async (supplierId) => {
 // 	try {
 // 		let supplierProducts =  await sequelize.query(`
-// 			select productNo,productName,(productNo || '-' || productName) as productLabel, sum(price*quantity) as amount from orderItems 
+// 			select productNo,productName,(productNo || '-' || productName) as productLabel, sum(price*quantity) as amount from orderItems
 // 			where orderId in
 // 				(select id from orders where supplierId = ${supplierId})
 // 			group by productId

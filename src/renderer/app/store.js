@@ -6,7 +6,7 @@ import orderReducer, {fetchOrders} from '../selectors/ordersSlice'
 import productReducer, {fetchProducts} from '../selectors/productsSlice'
 import orderItemReducer, {fetchOrderItems} from '../selectors/orderItemsSlice'
 import {checkDataVersion} from '../api/db'
-import {log} from '../api/log'
+import {log} from '../log'
 
 const combinedReducer = combineReducers({
     suppliers: supplierReducer,

@@ -5,7 +5,7 @@ import {
     checkProductNoExistInSupplier,
     checkOrderNoExist,
 } from './api/db'
-import {log} from './api/log'
+import {log} from './log'
 
 export const supplierNameValidator = async (rule, value, callback) => {
     // log.debug(`in validator, value is ${value} value length ${value.length}`)

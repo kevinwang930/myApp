@@ -6,7 +6,7 @@ import {removeOrderItems} from '../selectors/orderItemsSlice'
 import {selectOrderExcerpts} from '../selectors/selectors'
 import {NavLink} from 'react-router-dom'
 import {setSelectedPage} from '../selectors/menuSlice'
-import {log} from '../api/log'
+import {log} from '../log'
 import React, {useRef} from 'react'
 
 export function OrdersView() {

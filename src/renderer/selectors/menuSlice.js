@@ -1,10 +1,11 @@
-import { createSlice } from '@reduxjs/toolkit'
-import { log } from '../api/log'
-const initialState = {selectedPage:null}
+import {createSlice} from '@reduxjs/toolkit'
+import {log} from '../log'
+
+const initialState = {selectedPage: null}
 
 const menuSlice = createSlice({
     name: 'menu',
-    initialState: initialState,
+    initialState,
     reducers: {
         setSelectedPage(state, action) {
             // log.debug(state.selectedPage)
@@ -12,10 +13,10 @@ const menuSlice = createSlice({
             if (state.selectedPage !== action.payload) {
                 state.selectedPage = action.payload
             }
-        }
-    }
+        },
+    },
 })
 
 export default menuSlice.reducer
-export const { setSelectedPage } = menuSlice.actions
-export const getSelectedPage = (state) =>(state.menu.selectedPage)
+export const {setSelectedPage} = menuSlice.actions
+export const getSelectedPage = (state) => state.menu.selectedPage

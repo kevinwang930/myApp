@@ -9,7 +9,7 @@ import {
 import {selectProductExcerpts} from '../selectors/selectors'
 
 import {setSelectedPage} from '../selectors/menuSlice'
-import {log} from '../api/log'
+import {log} from '../log'
 
 import {ProductsView} from '../components/productsView'
 

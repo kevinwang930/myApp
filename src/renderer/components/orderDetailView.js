@@ -38,7 +38,7 @@ import {
     EditOutlined,
     SaveOutlined,
 } from '@ant-design/icons'
-import {log} from '../api/log'
+import {log} from '../log'
 import {isEmpty} from 'lodash'
 import {getOrderTotalAmount} from '../api/db'
 import {orderExcelReport} from '../api/orderExcelReport'

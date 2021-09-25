@@ -19,7 +19,7 @@
 import {credentials, loadPackageDefinition} from '@grpc/grpc-js'
 import {loadSync} from '@grpc/proto-loader'
 
-import {log} from './log'
+import {log} from '../log'
 
 const PROTO_PATH = process.env.GRPC_PROTO_PATH
 

@@ -42,6 +42,7 @@ module.exports = {
         'no-param-reassign': 'off',
         'react/jsx-props-no-spreading': 'off',
         'no-use-before-define': 'off',
+        'import/no-mutable-exports': 'off',
     },
     settings: {
         node: {

@@ -1,5 +1,4 @@
 import {createSlice} from '@reduxjs/toolkit'
-import {log} from '../log'
 
 const initialState = {selectedPage: null}
 

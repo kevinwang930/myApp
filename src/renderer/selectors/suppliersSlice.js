@@ -10,7 +10,6 @@ import {
     updateSupplierById as updateSupplierById_db,
     deleteSupplierById as deleteSupplierById_db,
 } from '../api/db'
-import {log} from '../log'
 
 export const fetchSuppliers = createAsyncThunk(
     'suppliers/fetchSuppliers',
@@ -30,17 +29,17 @@ export const createSupplier = createAsyncThunk(
 
 export const updateSupplier = createAsyncThunk(
     'suppliers/updateSupplier',
-    async ({id, changes}, thunkAPI) => {
+    async ({id, changes}) => {
         // log.debug('changed values in slice',changes)
         await updateSupplierById_db(id, changes)
 
-        return {id: id, changes: changes}
+        return {id, changes}
     }
 )
 
 export const deleteSupplier = createAsyncThunk(
     'suppliers/deleteSupplier',
-    async ({id, productIds, orderIds}, thunkAPI) => {
+    async ({id, productIds, orderIds}) => {
         try {
             await deleteSupplierById_db(id)
             return {id, productIds, orderIds}
@@ -120,9 +119,8 @@ export const selectFilteredSuppliers = createSelector(
             return suppliers.filter((supplier) =>
                 supplier.name.includes(filterInfo)
             )
-        } else {
-            return suppliers
         }
+        return suppliers
     }
 )
 
@@ -132,9 +130,8 @@ export const selectSupplierByIdAllowNull = createSelector(
     (suppliers, id) => {
         if (!id) {
             return null
-        } else {
-            return suppliers[id]
         }
+        return suppliers[id]
     }
 )
 

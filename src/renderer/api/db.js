@@ -1,12 +1,14 @@
 import Database from 'better-sqlite3'
-import {exec, execSync} from 'child_process'
+import {execSync} from 'child_process'
 import path from 'path'
-import fs from 'fs'
-import _ from 'lodash'
-import {log} from '../log'
+import {existsSync, mkdirSync, unlinkSync} from 'fs'
 
-const dbPath = process.env.SQLITE_PATH
-const dumpPath = process.env.DATABASE_DUMPPATH
+import {rendererLog} from '../log'
+import {
+    getSqliteFilePath,
+    getSqliteSchemaPath,
+    getSqliteAppSchemaPath,
+} from '../../bridges/settings'
 
 let db = null
 
@@ -35,23 +37,46 @@ export function getDataVersion() {
     return dataVersion
 }
 
-export function dbConnect() {
+export function sqlite_getOrCreatePath() {
+    const sqliteFilePath = getSqliteFilePath()
+    let schemaPath = getSqliteSchemaPath()
+    if (!schemaPath || !existsSync(schemaPath)) {
+        schemaPath = getSqliteAppSchemaPath()
+        if (!schemaPath || !existsSync(schemaPath)) {
+            throw new Error('sqlite schema 不存在')
+        }
+    }
+    if (!sqliteFilePath) {
+        throw new Error('无法确定sqlite数据库地址')
+    }
+    if (!existsSync(sqliteFilePath)) {
+        const dir = path.dirname(sqliteFilePath)
+        mkdirSync(dir, {recursive: true})
+    }
+
+    return {sqliteFilePath, schemaPath}
+}
+
+export function sqlite_connect() {
+    const sqliteFilePath = getSqliteFilePath()
     if (!db) {
-        db = new Database(dbPath, {
+        db = new Database(sqliteFilePath, {
             fileMustExist: true,
-            verbose: log.debug,
+            verbose: rendererLog.debug,
         })
+        rendererLog.debug(`sqlite connected ${sqliteFilePath}`)
+    } else {
+        rendererLog.warn(`${db.name} already opened`)
     }
 
     getDataVersion()
     db.pragma('foreign_keys=on')
     const result = db.pragma('foreign_keys', simpleOption)
 
-    log.debug('database connected.')
-    log.debug('foreign key status', result)
+    rendererLog.debug('database connected,foreign key status ', result)
 }
 
-export function dbClose() {
+export function sqlite_close() {
     db.close()
     db = null
 }
@@ -89,7 +114,7 @@ export const getOrderTotalAmount = async (id) => {
             .get()
         return result.totalAmount
     } catch (e) {
-        log.error('get total amount failed', e.message)
+        rendererLog.error('get total amount failed', e.message)
         return Promise.reject(e.message)
     }
 }
@@ -196,7 +221,7 @@ export function getSuppliers() {
         // log.debug('get suppliers from db',suppliersText)
         return suppliers
     } catch (error) {
-        log.error('failed to get suppliers', error.message)
+        rendererLog.error('failed to get suppliers', error.message)
         return Promise.reject(error)
     }
 }
@@ -239,7 +264,7 @@ export function getOrders() {
             }
         })
     } catch (error) {
-        log.error('failed to get orders', error.message)
+        rendererLog.error('failed to get orders', error.message)
         return Promise.reject(error)
     }
 }
@@ -255,7 +280,7 @@ export const getOrderItems = () => {
             .all()
         return orderItems
     } catch (e) {
-        log.error('failed to get orderItems', e.message)
+        rendererLog.error('failed to get orderItems', e.message)
         return Promise.reject(e)
     }
 }
@@ -270,7 +295,7 @@ export async function getProducts() {
         // Product.findAll({ attributes: ['id', 'name', 'productNo', 'description','supplierId'] })
         return products
     } catch (error) {
-        log.error('failed to get products', error)
+        rendererLog.error('failed to get products', error)
         return Promise.reject(error)
     }
 }
@@ -332,7 +357,7 @@ export const deleteEntryById = async (tableName, id) => {
 		`
         ).run()
     } catch (e) {
-        log.debug(`delete from ${tableName} failed`, e.message)
+        rendererLog.debug(`delete from ${tableName} failed`, e.message)
         return Promise.reject(e)
     }
 }
@@ -362,10 +387,10 @@ export function insertEntry(tableName, info) {
 		values(${values.join()},datetime('now'),datetime('now')) returning id`
             )
             .get()
-        log.debug(`insert database ${tableName} id ${row.id}`)
+        rendererLog.debug(`insert database ${tableName} id ${row.id}`)
         info.id = row.id
     } catch (e) {
-        log.error('insert entry failed', e.message)
+        rendererLog.error('insert entry failed', e.message)
         return Promise.reject(e)
     }
 }
@@ -386,7 +411,7 @@ export function insertEntries(tableName, infoList) {
     try {
         insertMany(infoList)
     } catch (e) {
-        log.error('insertEntries failed', e.message)
+        rendererLog.error('insertEntries failed', e.message)
         return Promise.reject(e)
     }
 }
@@ -410,58 +435,48 @@ export async function createOrder({orderInfo, orderItemsInfo}) {
     try {
         createFn()
     } catch (e) {
-        log.error('create order failed', e.message)
+        rendererLog.error('create order failed', e.message)
         return Promise.reject(e)
     }
 }
 
-export function sqlite_dump(filePath, callback) {
-    const dumpDir = path.dirname(filePath)
-    if (!fs.existsSync(dumpDir)) {
-        fs.mkdirSync(dumpDir, {recursive: true})
+export function sqlite_dump(sqliteFilePath, dumpPath) {
+    const dumpDir = path.dirname(dumpPath)
+    if (!existsSync(dumpDir)) {
+        mkdirSync(dumpDir, {recursive: true})
     }
-    exec(
-        `sqlite3 ${dbPath} .dump | ForEach-Object {$_.replace("CREATE TABLE","CREATE TABLE IF NOT EXISTS")} > ${filePath}`,
+    execSync(
+        `sqlite3 ${sqliteFilePath} .dump | ForEach-Object {$_.replace("CREATE TABLE","CREATE TABLE IF NOT EXISTS")} > ${dumpPath}`,
         {
             shell: 'pwsh',
-        },
-        callback
+        }
     )
 }
 
 export function sqlite_reset() {
     try {
-        dbClose()
+        sqlite_close()
     } catch (e) {
-        log.error(e.message)
+        rendererLog.error(e.message)
+    }
+    const {sqliteFilePath, schemaPath} = sqlite_getOrCreatePath()
+
+    if (existsSync(sqliteFilePath)) {
+        unlinkSync(sqliteFilePath)
     }
 
-    if (fs.existsSync(dbPath)) {
-        fs.unlinkSync(dbPath)
-    }
-
-    execSync(`sqlite3 ${dbPath} ".exit"`)
-    dbConnect()
+    execSync(`sqlite3 ${sqliteFilePath} ".read '${schemaPath}'" ".exit"`)
+    sqlite_connect()
 }
 
-export function sqlite_resetAndLoadSchema() {
-    try {
-        dbClose()
-    } catch (e) {
-        log.error(e.message)
-    }
-
-    if (fs.existsSync(dbPath)) {
-        fs.unlinkSync(dbPath)
-    }
+export function sqlite_readDump(dumpPath) {
+    const sqliteFilePath = getSqliteFilePath()
     const buffer = execSync(
-        `sqlite3 ${dbPath} ".read ${process.env.DATABASE_SCHEMAPATH}" ".exit"`
+        `sqlite3 ${sqliteFilePath} ".read '${dumpPath}'" ".exit"`
     )
-    log.info(buffer.toString())
-    dbConnect()
+    rendererLog.info(buffer.toString())
 }
 
-export function sqlite_readDump(filePath) {
-    const buffer = execSync(`sqlite3 ${dbPath} ".read '${filePath}'" ".exit"`)
-    log.info(buffer.toString())
+export function sqlite_createLoadSchema(sqliteFilePath, schemaPath) {
+    execSync(`sqlite3 ${sqliteFilePath} ".read '${schemaPath}'" ".exit"`)
 }

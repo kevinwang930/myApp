@@ -19,7 +19,7 @@
 import {credentials, loadPackageDefinition} from '@grpc/grpc-js'
 import {loadSync} from '@grpc/proto-loader'
 
-import {log} from '../log'
+import {rendererLog} from '../log'
 
 const PROTO_PATH = process.env.GRPC_PROTO_PATH
 
@@ -41,9 +41,9 @@ export const client = new jsPython.Communication(
 export function sayHello() {
     client.sayHello({name: 'kevin'}, (err, response) => {
         if (err) {
-            log.error(err)
+            rendererLog.error(err)
         } else {
-            log.debug('Greeting:', response.message)
+            rendererLog.debug('Greeting:', response.message)
         }
     })
 }

@@ -14,6 +14,7 @@ const {app, BrowserWindow, shell, ipcMain, dialog} = require('electron')
 const {autoUpdater} = require('electron-updater')
 const log = require('electron-log')
 const fs = require('fs')
+require('./setting')
 const {mainLog} = require('./log')
 const MenuBuilder = require('./menu')
 const {resolveHtmlPath, startPythonService, RESOURCES_PATH} = require('./util')
@@ -46,7 +47,7 @@ if (isDevelopment) {
 const installExtensions = async () => {
     const {
         default: install,
-        REDUX_DEVTOOLS,
+        // REDUX_DEVTOOLS,
         REACT_DEVELOPER_TOOLS,
     } = require('electron-devtools-installer')
     const forceDownload = !!process.env.UPGRADE_EXTENSIONS
@@ -148,23 +149,6 @@ ipcMain.handle('printPdf', async (event, outputPath) => {
     } catch (e) {
         return {result: false, message: e.message}
     }
-})
-
-ipcMain.handle('print', async (event, outputPath) => {
-    mainWindow.webContents.print(
-        {
-            landscape: false,
-            printBackground: false,
-            fitToPageEnabled: false,
-            // scaleFactor:64
-        },
-        (success, errorType) => {
-            if (!success) {
-                return {result: false, message: errorType}
-            }
-            return {result: true, message: null}
-        }
-    )
 })
 
 ipcMain.handle('chooseSavePath', async (event, defaultPath) => {

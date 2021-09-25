@@ -2,7 +2,7 @@
 const {URL} = require('url')
 const path = require('path')
 const {spawn} = require('child_process')
-const {app} = require('electron')
+const {app, ipcMain} = require('electron')
 const fs = require('fs')
 const {mainLog, pythonLog} = require('./log')
 const {srcPath} = require('../../.erb/configs/webpack.paths')
@@ -12,8 +12,10 @@ const {store} = require('./setting')
 
 let GRPC_PROTO_PATH
 let RESOURCES_PATH
+
 let APP_ROOT_PATH
 let APP_PUBLIC_PATH
+let APP_SQLITE_SCHEMA_PATH
 let PYTHON_EXEC_PATH
 
 let pythonService
@@ -22,6 +24,10 @@ function initPathsAndEnv() {
     if (app.isPackaged) {
         APP_ROOT_PATH = path.dirname(app.getPath('exe'))
         APP_PUBLIC_PATH = path.resolve(APP_ROOT_PATH, 'public')
+        APP_SQLITE_SCHEMA_PATH = path.resolve(
+            APP_ROOT_PATH,
+            'db/sqlite_schema.sql'
+        )
         GRPC_PROTO_PATH = path.resolve(APP_PUBLIC_PATH, 'jsPython.proto')
         RESOURCES_PATH = path.join(process.resourcesPath, 'assets')
         PYTHON_EXEC_PATH = path.join(
@@ -31,8 +37,10 @@ function initPathsAndEnv() {
     } else if (process.env.NODE_ENV === 'development') {
         RESOURCES_PATH = path.join(__dirname, '../../assets')
         GRPC_PROTO_PATH = path.resolve('public/jsPython.proto')
+        APP_SQLITE_SCHEMA_PATH = path.resolve('db/sqlite_schema.sql')
     }
     process.env.GRPC_PROTO_PATH = GRPC_PROTO_PATH
+    store.set('sqlite.appSchemaPath', APP_SQLITE_SCHEMA_PATH)
 }
 
 function startPythonServicePacked(sqliteFilePath) {
@@ -119,6 +127,9 @@ async function restartPythonService() {
 }
 
 initPathsAndEnv()
+ipcMain.handle('start-pythonService', (_) => {
+    startPythonService()
+})
 
 module.exports = {
     resolveHtmlPath,

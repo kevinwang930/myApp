@@ -22,7 +22,7 @@ module.exports = {
         },
     },
     rules: {
-        'no-unused-vars': 'off',
+        // 'no-unused-vars': 'off',
         'no-console': 'off',
         // A temporary hack related to IDE not resolving correct package.json
         'import/no-extraneous-dependencies': 'off',
@@ -43,6 +43,7 @@ module.exports = {
         'react/jsx-props-no-spreading': 'off',
         'no-use-before-define': 'off',
         'import/no-mutable-exports': 'off',
+        'no-return-await': 'off',
     },
     settings: {
         node: {

@@ -6,7 +6,9 @@
   "useTabs":false,
   "bracketSpacing": false,
   "bracketSameLine":false,
-  "arrowParens": "always"
+  "arrowParens": "always",
+  "endOfLine": "lf"
+
 
 
 }

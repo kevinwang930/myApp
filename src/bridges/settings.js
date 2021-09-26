@@ -8,8 +8,8 @@ export function getSqliteSchemaPath() {
     return ipcRenderer.sendSync('get-sqlite-schema-path')
 }
 
-export function getSqliteAppSchemaPath() {
-    return ipcRenderer.sendSync('get-sqlite-app-schema-path')
+export function getAppSqliteSchemaPath() {
+    return ipcRenderer.sendSync('get-app-sqlite-schema-path')
 }
 
 export function getGrpcProtoPath() {

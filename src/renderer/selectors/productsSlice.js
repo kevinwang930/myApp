@@ -11,7 +11,7 @@ import {
     updateProductById as updateProductById_db,
     deleteProductById as deleteProductById_db,
 } from '../api/db'
-import {rendererLog} from '../log'
+import {log} from '../log'
 
 export const fetchProducts = createAsyncThunk(
     'products/fetchProducts',
@@ -41,7 +41,7 @@ export const createProducts = createAsyncThunk(
 export const updateProduct = createAsyncThunk(
     'products/updateProduct',
     async ({id, changes}, thunkAPI) => {
-        rendererLog.debug('changed values in slice', changes)
+        log.debug('changed values in slice', changes)
         const response = await updateProductById_db(id, changes)
 
         return {id: id, changes: changes}

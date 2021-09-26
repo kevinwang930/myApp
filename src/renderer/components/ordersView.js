@@ -6,7 +6,7 @@ import {removeOrderItems} from '../selectors/orderItemsSlice'
 import {selectOrderExcerpts} from '../selectors/selectors'
 import {NavLink} from 'react-router-dom'
 import {setSelectedPage} from '../selectors/menuSlice'
-import {rendererLog} from '../log'
+import {log} from '../log'
 import React, {useRef} from 'react'
 
 export function OrdersView() {
@@ -15,13 +15,13 @@ export function OrdersView() {
     const orderExcerpts = useSelector(selectOrderExcerpts)
 
     const onOrderUpdate = (id) => {
-        rendererLog.debug('order detail id', id)
+        log.debug('order detail id', id)
         dispatch(setSelectedPage('orderDetail'))
         dispatch(setOrderIdInDetailPage(id))
     }
 
     const onDelete = (record) => {
-        rendererLog.debug('delete order ', record)
+        log.debug('delete order ', record)
         dispatch(removeOrderItems(record.orderItemIds))
         dispatch(
             deleteOrder({id: record.id, orderItemIds: record.orderItemIds})

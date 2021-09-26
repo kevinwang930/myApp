@@ -4,7 +4,7 @@ import {Form, Input, Button, message, Select, Space} from 'antd'
 import {createProducts} from '../selectors/productsSlice'
 import {selectSupplierOptions} from '../selectors/suppliersSlice'
 
-import {rendererLog} from '../log'
+import {log} from '../log'
 
 import {strict as assert} from 'assert'
 import {MinusCircleOutlined, PlusOutlined} from '@ant-design/icons'
@@ -80,7 +80,7 @@ export function ProductsCreateView(props) {
 
             message.success(`${productsInfo.length} 产品创建成功`)
             form.resetFields()
-            rendererLog.debug(`supplier id after create ${supplier.id}`)
+            log.debug(`supplier id after create ${supplier.id}`)
             setSupplier({id: null, name: null})
         } catch (e) {
             message.error(`产品创建失败 ${e.message}`)

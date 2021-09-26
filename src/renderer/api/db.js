@@ -3,11 +3,11 @@ import {execSync} from 'child_process'
 import path from 'path'
 import {existsSync, mkdirSync, unlinkSync} from 'fs'
 
-import {rendererLog} from '../log'
+import {log} from '../log'
 import {
     getSqliteFilePath,
     getSqliteSchemaPath,
-    getSqliteAppSchemaPath,
+    getAppSqliteSchemaPath,
 } from '../../bridges/settings'
 
 let db = null
@@ -39,9 +39,12 @@ export function getDataVersion() {
 
 export function sqlite_getOrCreatePath() {
     const sqliteFilePath = getSqliteFilePath()
+
     let schemaPath = getSqliteSchemaPath()
+
     if (!schemaPath || !existsSync(schemaPath)) {
-        schemaPath = getSqliteAppSchemaPath()
+        schemaPath = getAppSqliteSchemaPath()
+
         if (!schemaPath || !existsSync(schemaPath)) {
             throw new Error('sqlite schema 不存在')
         }
@@ -62,18 +65,18 @@ export function sqlite_connect() {
     if (!db) {
         db = new Database(sqliteFilePath, {
             fileMustExist: true,
-            verbose: rendererLog.debug,
+            verbose: log.debug,
         })
-        rendererLog.debug(`sqlite connected ${sqliteFilePath}`)
+        log.debug(`sqlite connected ${sqliteFilePath}`)
     } else {
-        rendererLog.warn(`${db.name} already opened`)
+        log.warn(`${db.name} already opened`)
     }
 
     getDataVersion()
     db.pragma('foreign_keys=on')
     const result = db.pragma('foreign_keys', simpleOption)
 
-    rendererLog.debug('database connected,foreign key status ', result)
+    log.debug('database connected,foreign key status ', result)
 }
 
 export function sqlite_close() {
@@ -114,7 +117,7 @@ export const getOrderTotalAmount = async (id) => {
             .get()
         return result.totalAmount
     } catch (e) {
-        rendererLog.error('get total amount failed', e.message)
+        log.error('get total amount failed', e.message)
         return Promise.reject(e.message)
     }
 }
@@ -221,7 +224,7 @@ export function getSuppliers() {
         // log.debug('get suppliers from db',suppliersText)
         return suppliers
     } catch (error) {
-        rendererLog.error('failed to get suppliers', error.message)
+        log.error('failed to get suppliers', error.message)
         return Promise.reject(error)
     }
 }
@@ -264,7 +267,7 @@ export function getOrders() {
             }
         })
     } catch (error) {
-        rendererLog.error('failed to get orders', error.message)
+        log.error('failed to get orders', error.message)
         return Promise.reject(error)
     }
 }
@@ -280,7 +283,7 @@ export const getOrderItems = () => {
             .all()
         return orderItems
     } catch (e) {
-        rendererLog.error('failed to get orderItems', e.message)
+        log.error('failed to get orderItems', e.message)
         return Promise.reject(e)
     }
 }
@@ -295,7 +298,7 @@ export async function getProducts() {
         // Product.findAll({ attributes: ['id', 'name', 'productNo', 'description','supplierId'] })
         return products
     } catch (error) {
-        rendererLog.error('failed to get products', error)
+        log.error('failed to get products', error)
         return Promise.reject(error)
     }
 }
@@ -357,7 +360,7 @@ export const deleteEntryById = async (tableName, id) => {
 		`
         ).run()
     } catch (e) {
-        rendererLog.debug(`delete from ${tableName} failed`, e.message)
+        log.debug(`delete from ${tableName} failed`, e.message)
         return Promise.reject(e)
     }
 }
@@ -387,10 +390,10 @@ export function insertEntry(tableName, info) {
 		values(${values.join()},datetime('now'),datetime('now')) returning id`
             )
             .get()
-        rendererLog.debug(`insert database ${tableName} id ${row.id}`)
+        log.debug(`insert database ${tableName} id ${row.id}`)
         info.id = row.id
     } catch (e) {
-        rendererLog.error('insert entry failed', e.message)
+        log.error('insert entry failed', e.message)
         return Promise.reject(e)
     }
 }
@@ -411,7 +414,7 @@ export function insertEntries(tableName, infoList) {
     try {
         insertMany(infoList)
     } catch (e) {
-        rendererLog.error('insertEntries failed', e.message)
+        log.error('insertEntries failed', e.message)
         return Promise.reject(e)
     }
 }
@@ -435,7 +438,7 @@ export async function createOrder({orderInfo, orderItemsInfo}) {
     try {
         createFn()
     } catch (e) {
-        rendererLog.error('create order failed', e.message)
+        log.error('create order failed', e.message)
         return Promise.reject(e)
     }
 }
@@ -457,7 +460,7 @@ export function sqlite_reset() {
     try {
         sqlite_close()
     } catch (e) {
-        rendererLog.error(e.message)
+        log.error(e.message)
     }
     const {sqliteFilePath, schemaPath} = sqlite_getOrCreatePath()
 
@@ -474,7 +477,7 @@ export function sqlite_readDump(dumpPath) {
     const buffer = execSync(
         `sqlite3 ${sqliteFilePath} ".read '${dumpPath}'" ".exit"`
     )
-    rendererLog.info(buffer.toString())
+    log.info(buffer.toString())
 }
 
 export function sqlite_createLoadSchema(sqliteFilePath, schemaPath) {

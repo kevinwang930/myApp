@@ -2,7 +2,7 @@ import React, {useEffect} from 'react'
 import {Form, Input, Button, Select, message} from 'antd'
 import {strict as assert} from 'assert'
 import {useDispatch, useSelector} from 'react-redux'
-import {rendererLog} from '../log'
+import {log} from '../log'
 
 import {
     updateSupplier,
@@ -32,13 +32,13 @@ export function SupplierUpdate(props) {
     const supplierOptions = useSelector(selectSupplierOptions)
     // log.debug(supplierOptions)
     const onSupplierSelect = (value) => {
-        rendererLog.debug('supplier updating id', value)
+        log.debug('supplier updating id', value)
         if (value !== supplierId) {
             dispatch(setSupplierUpdatingId(value))
         }
     }
     const onSupplierClear = () => {
-        rendererLog.debug('supplier update select clear')
+        log.debug('supplier update select clear')
         dispatch(setSupplierUpdatingId(null))
     }
     const onFinish = async (values) => {
@@ -56,7 +56,7 @@ export function SupplierUpdate(props) {
                 changedValues[key] = processedValue
             }
         }
-        rendererLog.debug('changed values ', changedValues)
+        log.debug('changed values ', changedValues)
         if (Object.keys(changedValues).length !== 0) {
             dispatch(updateSupplier({id: supplier.id, changes: changedValues}))
                 .unwrap()
@@ -64,7 +64,7 @@ export function SupplierUpdate(props) {
                     message.success('供应商更新成功')
                 })
                 .catch((rejectedValueOrSerializedError) => {
-                    rendererLog.error(rejectedValueOrSerializedError)
+                    log.error(rejectedValueOrSerializedError)
                 })
         } else {
             message.warn('供应商信息没有变动')

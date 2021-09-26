@@ -10,7 +10,7 @@ import {
     deleteOrderById as deleteOrderById_db,
     deleteOrderItemById as deleteOrderItemById_db,
 } from '../api/db'
-import {rendererLog} from '../log'
+import {log} from '../log'
 
 export const fetchOrders = createAsyncThunk('orders/fetchOrders', async () => {
     const response = await getOrders()
@@ -20,7 +20,7 @@ export const fetchOrders = createAsyncThunk('orders/fetchOrders', async () => {
 export const updateOrder = createAsyncThunk(
     'orders/updateOrder',
     async ({id, changes}, thunkAPI) => {
-        rendererLog.debug('changed values in slice', changes)
+        log.debug('changed values in slice', changes)
         const response = await updateOrderById_db(id, changes)
 
         return {id: id, changes: changes}

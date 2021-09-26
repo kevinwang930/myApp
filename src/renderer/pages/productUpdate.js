@@ -15,7 +15,7 @@ import {createProducts} from '../selectors/productsSlice'
 import {selectSupplierOptions} from '../selectors/suppliersSlice'
 import {trimWhitespace, formProductNoValidator} from '../auxiliary'
 import {ProductsUpdateView} from '../components/productsUpdateView'
-import {rendererLog} from '../log'
+import {log} from '../log'
 
 const FormItem = Form.Item
 const {TextArea} = Input
@@ -35,7 +35,7 @@ export function ProductUpdate(props) {
     // }
 
     const onFinish = async (values) => {
-        rendererLog.debug(`creating product ${JSON.stringify(values)}`)
+        log.debug(`creating product ${JSON.stringify(values)}`)
         if (!values.products) {
             return message.error({
                 content: '请添加产品条目',

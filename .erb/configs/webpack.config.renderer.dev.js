@@ -264,14 +264,25 @@ module.exports = merge(baseConfig, {
             disableDotRule: false,
         },
         onBeforeSetupMiddleware() {
-            console.log('Starting Main Process...')
-            spawn('npm', ['run', 'start:main'], {
-                shell: true,
-                env: process.env,
-                stdio: 'inherit',
-            })
-                .on('close', (code) => process.exit(code))
-                .on('error', (spawnError) => console.error(spawnError))
+            if (process.env.DEBUG) {
+                console.log('Starting Main Process in debug mode...')
+                spawn('npm', ['run', 'start:main:debug'], {
+                    shell: true,
+                    env: process.env,
+                    stdio: 'inherit',
+                })
+                    .on('close', (code) => process.exit(code))
+                    .on('error', (spawnError) => console.error(spawnError))
+            } else {
+                console.log('Starting Main Process...')
+                spawn('npm', ['run', 'start:main'], {
+                    shell: true,
+                    env: process.env,
+                    stdio: 'inherit',
+                })
+                    .on('close', (code) => process.exit(code))
+                    .on('error', (spawnError) => console.error(spawnError))
+            }
         },
     },
 })

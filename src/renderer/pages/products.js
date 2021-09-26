@@ -9,7 +9,7 @@ import {
 import {selectProductExcerpts} from '../selectors/selectors'
 
 import {setSelectedPage} from '../selectors/menuSlice'
-import {rendererLog} from '../log'
+import {log} from '../log'
 
 import {ProductsView} from '../components/productsView'
 
@@ -22,7 +22,7 @@ export const Products = () => {
     const productExcerpts = useSelector(selectProductExcerpts)
 
     const onProductSearch = (value) => {
-        rendererLog.debug('product search value ', value)
+        log.debug('product search value ', value)
         dispatch(setProductNoFilter(value.trim()))
     }
     const onSupplierSearch = (value) => {

@@ -5,7 +5,7 @@ import {
     checkProductNoExistInSupplier,
     checkOrderNoExist,
 } from './api/db'
-import {rendererLog} from './log'
+import {log} from './log'
 
 export const supplierNameValidator = async (rule, value, callback) => {
     // log.debug(`in validator, value is ${value} value length ${value.length}`)
@@ -111,7 +111,7 @@ export const orderNoCreateValidator = async (rule, value, callback) => {
 }
 
 export const priceValidator = async (rule, value, callback) => {
-    rendererLog.debug(value)
+    log.debug(value)
     if (!value) {
         return callback('产品价格不能为空')
     }

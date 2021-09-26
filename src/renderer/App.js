@@ -19,7 +19,7 @@ import {Test} from './pages/test'
 import {NavBar} from './pages/navBar'
 
 // import {  initStore } from './app/store'
-import {rendererLog} from './log'
+import {log} from './log'
 import './App.global.css'
 
 export default function App() {

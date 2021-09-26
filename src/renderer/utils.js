@@ -7,7 +7,7 @@ import {
 } from './api/db'
 import {startPythonService} from '../bridges/utils'
 
-import {rendererLog} from './log'
+import {log} from './log'
 
 export async function checkFileWritable(path) {
     try {
@@ -26,9 +26,7 @@ export async function checkFileWritable(path) {
 
 export function sqlite_initConnect() {
     const {sqliteFilePath, schemaPath} = sqlite_getOrCreatePath()
-    rendererLog.info(
-        `sqlite File path ${sqliteFilePath}, schema path ${schemaPath}`
-    )
+    log.info(`sqlite File path ${sqliteFilePath}, schema path ${schemaPath}`)
 
     if (!existsSync(sqliteFilePath)) {
         sqlite_createLoadSchema(sqliteFilePath, schemaPath)

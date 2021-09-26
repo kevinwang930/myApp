@@ -8,17 +8,17 @@ import App from './app'
 
 import {store, clearStoreAndFetchData} from './app/store'
 
-import {rendererLog} from './log'
+import {log} from './log'
 import {sqlite_initConnect} from './utils'
 
-rendererLog.info(`node_env in ${process.env.NODE_ENV} mode `)
+log.info(`node_env in ${process.env.NODE_ENV} mode `)
 
 async function main() {
     try {
         sqlite_initConnect()
         await clearStoreAndFetchData()
     } catch (e) {
-        rendererLog.error('导入数据库失败', e.message)
+        log.error('导入数据库失败', e.message)
         return
     }
 

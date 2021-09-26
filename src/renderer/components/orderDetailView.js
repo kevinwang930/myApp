@@ -38,7 +38,7 @@ import {
     EditOutlined,
     SaveOutlined,
 } from '@ant-design/icons'
-import {rendererLog} from '../log'
+import {log} from '../log'
 import {isEmpty} from 'lodash'
 import {getOrderTotalAmount} from '../api/db'
 import {orderExcelReport} from '../api/orderExcelReport'
@@ -188,7 +188,7 @@ export const OrderDetailView = () => {
         orderItemName,
         removeCallBack
     ) => {
-        rendererLog.debug('on delete order item ', orderItemName)
+        log.debug('on delete order item ', orderItemName)
         let orderItem = form.getFieldValue(['orderItems', orderItemName])
         if (orderItem && orderItem.id) {
             try {
@@ -275,7 +275,7 @@ export const OrderDetailView = () => {
             ['orderItems', name, 'quantity'],
         ])
         let orderItem = value.orderItems[name]
-        rendererLog.debug(
+        log.debug(
             `on save validated  No ${name}, orderItem ${JSON.stringify(
                 orderItem
             )}`

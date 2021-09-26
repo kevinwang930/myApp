@@ -10,43 +10,13 @@ const {store} = require('./setting')
 
 // database related
 
-let GRPC_PROTO_PATH
-let RESOURCES_PATH
-
-let APP_ROOT_PATH
-let APP_PUBLIC_PATH
-let APP_SQLITE_SCHEMA_PATH
-let PYTHON_EXEC_PATH
-
 let pythonService
 
-function initPathsAndEnv() {
-    if (app.isPackaged) {
-        APP_ROOT_PATH = path.dirname(app.getPath('exe'))
-        APP_PUBLIC_PATH = path.resolve(APP_ROOT_PATH, 'public')
-        APP_SQLITE_SCHEMA_PATH = path.resolve(
-            APP_ROOT_PATH,
-            'db/sqlite_schema.sql'
-        )
-        GRPC_PROTO_PATH = path.resolve(APP_PUBLIC_PATH, 'jsPython.proto')
-        RESOURCES_PATH = path.join(process.resourcesPath, 'assets')
-        PYTHON_EXEC_PATH = path.join(
-            APP_ROOT_PATH,
-            'pythonService/pythonService.exe'
-        )
-    } else if (process.env.NODE_ENV === 'development') {
-        RESOURCES_PATH = path.join(__dirname, '../../assets')
-        GRPC_PROTO_PATH = path.resolve('public/jsPython.proto')
-        APP_SQLITE_SCHEMA_PATH = path.resolve('db/sqlite_schema.sql')
-    }
-    process.env.GRPC_PROTO_PATH = GRPC_PROTO_PATH
-    store.set('sqlite.appSchemaPath', APP_SQLITE_SCHEMA_PATH)
-}
-
 function startPythonServicePacked(sqliteFilePath) {
-    mainLog.info('start python service from ', PYTHON_EXEC_PATH)
+    const pythonExecPath = store.get('app.python.execPath')
+    mainLog.info('start python service from ', pythonExecPath)
 
-    pythonService = spawn(PYTHON_EXEC_PATH, {
+    pythonService = spawn(pythonExecPath, {
         env: {
             ...process.env,
             SQLITE_PATH: sqliteFilePath,
@@ -126,14 +96,12 @@ async function restartPythonService() {
     startPythonService()
 }
 
-initPathsAndEnv()
-ipcMain.handle('start-pythonService', (_) => {
+ipcMain.handle('start-pythonService', () => {
     startPythonService()
 })
 
 module.exports = {
     resolveHtmlPath,
-    RESOURCES_PATH,
     startPythonService,
     restartPythonService,
 }

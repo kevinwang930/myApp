@@ -1,14 +1,13 @@
 const path = require('path')
-const fs = require('fs')
+// const fs = require('fs')
 const webpack = require('webpack')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
-const chalk = require('chalk')
 const {merge} = require('webpack-merge')
 
-const {spawn, execSync} = require('child_process')
+const {spawn} = require('child_process')
 
 const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin')
-const {BundleAnalyzerPlugin} = require('webpack-bundle-analyzer')
+// const {BundleAnalyzerPlugin} = require('webpack-bundle-analyzer')
 
 const baseConfig = require('./webpack.config.base')
 const webpackPaths = require('./webpack.paths')

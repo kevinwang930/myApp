@@ -18,10 +18,11 @@
 
 import {credentials, loadPackageDefinition} from '@grpc/grpc-js'
 import {loadSync} from '@grpc/proto-loader'
+import {getGrpcProtoPath} from '../../bridges/settings'
 
 import {rendererLog} from '../log'
 
-const PROTO_PATH = process.env.GRPC_PROTO_PATH
+const PROTO_PATH = getGrpcProtoPath()
 
 const packageDefinition = loadSync(PROTO_PATH, {
     keepCase: true,

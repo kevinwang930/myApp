@@ -1,8 +1,8 @@
 {
     // "upgrade": true,
     // "filter": "express",
-    "reject": [
-        "electron"
-    ],
-    "target":"minor"
+    // "reject": [
+    //     "electron"
+    // ],
+    // "target":"minor"
 }

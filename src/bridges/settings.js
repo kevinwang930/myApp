@@ -11,3 +11,7 @@ export function getSqliteSchemaPath() {
 export function getSqliteAppSchemaPath() {
     return ipcRenderer.sendSync('get-sqlite-app-schema-path')
 }
+
+export function getGrpcProtoPath() {
+    return ipcRenderer.sendSync('get-grpc-proto-path')
+}

@@ -14,10 +14,10 @@ const {app, BrowserWindow, shell, ipcMain, dialog} = require('electron')
 const {autoUpdater} = require('electron-updater')
 const log = require('electron-log')
 const fs = require('fs')
-require('./setting')
+const {store} = require('./setting')
 const {mainLog} = require('./log')
 const MenuBuilder = require('./menu')
-const {resolveHtmlPath, startPythonService, RESOURCES_PATH} = require('./util')
+const {resolveHtmlPath, startPythonService} = require('./util')
 
 startPythonService()
 
@@ -57,6 +57,7 @@ const installExtensions = async () => {
 }
 
 const createWindow = async () => {
+    log.debug('start create window')
     if (
         process.env.NODE_ENV === 'development' ||
         process.env.DEBUG_PROD === 'true'
@@ -65,14 +66,17 @@ const createWindow = async () => {
     }
 
     const getAssetPath = (...paths) => {
-        return path.join(RESOURCES_PATH, ...paths)
+        const assetPath = store.get('app.assetsPath')
+        return path.join(assetPath, ...paths)
     }
 
+    const iconPath = getAssetPath('icon.png')
+    log.debug('icon path', iconPath)
     mainWindow = new BrowserWindow({
-        show: false,
+        show: true,
         width: 1024,
         height: 728,
-        icon: getAssetPath('icon.png'),
+        icon: iconPath,
         webPreferences: {
             nodeIntegration: true,
             contextIsolation: false,

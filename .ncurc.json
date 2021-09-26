@@ -1,0 +1,8 @@
+{
+    // "upgrade": true,
+    // "filter": "express",
+    "reject": [
+        "electron"
+    ],
+    "target":"minor"
+}

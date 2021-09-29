@@ -26,30 +26,34 @@ import sys
 import os
 
 # load_dotenv()
-logging.basicConfig(level=os.getenv('LOG_LEVEL','INFO').upper(),format="[python] [%(levelname)s] (%(filename)s) %(funcName)s(%(lineno)d): %(message)s")
+logging.basicConfig(
+    level=os.getenv("LOG_LEVEL", "INFO").upper(),
+    format="[python] [%(levelname)s] (%(filename)s) %(funcName)s(%(lineno)d): %(message)s",
+)
 
 from serverAction import orderExcelReport_openpyxl
 
+
 class JsPythonServer(jsPython_pb2_grpc.CommunicationServicer):
-
     async def sayHello(
-            self, request: jsPython_pb2.HelloRequest,
-            context: grpc.aio.ServicerContext) -> jsPython_pb2.HelloReply:
+        self, request: jsPython_pb2.HelloRequest, context: grpc.aio.ServicerContext
+    ) -> jsPython_pb2.HelloReply:
         print(request.name)
-        return jsPython_pb2.HelloReply(message='Hello from server')
+        return jsPython_pb2.HelloReply(message="Hello from server")
 
-    async def orderExcelReport(self,request,context):
+    async def orderExcelReport(self, request, context):
 
-            result,message=orderExcelReport_openpyxl(request.orderNo)
-            return jsPython_pb2.orderExportReply(result=result,message=message)
+        result, message = orderExcelReport_openpyxl(request.orderNo)
+        return jsPython_pb2.orderExportReply(result=result, message=message)
 
     async def supplierReportPdf(self, request, context):
-        return jsPython_pb2.resultWithMessage(True,'this is supplier report test')
+        return jsPython_pb2.resultWithMessage(True, "this is supplier report test")
+
 
 async def serve() -> None:
     server = grpc.aio.server()
     jsPython_pb2_grpc.add_CommunicationServicer_to_server(JsPythonServer(), server)
-    listen_addr = 'localhost:50051'
+    listen_addr = "localhost:50051"
     server.add_insecure_port(listen_addr)
     logging.info(f"python server start on %s pid {os.getpid()}", listen_addr)
     sys.stdout.write(f"python server start on {listen_addr} pid {os.getpid()}")
@@ -62,17 +66,19 @@ async def serve() -> None:
         # existing RPCs to continue within the grace period.
         await server.stop(0)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
 
     # logging.info(f'python server start {os.getpid()}')
-    env = os.getenv('PYTHON_ENV','production').upper()
-    if env == 'DEBUG':
+    env = os.getenv("PYTHON_ENV", "production").upper()
+    if env == "DEBUG":
         # debugpy = importlib.import_module('debugpy')
         import debugpy
 
         try:
             debugpy.connect(9223)
-            logging.debug('python service connect to debugger succeed')
+            logging.debug("python service connect to debugger succeed")
         except:
-            logging.debug('python service connect to debugger failed')
+            logging.debug("python service connect to debugger failed")
+
     asyncio.run(serve())

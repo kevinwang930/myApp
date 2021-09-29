@@ -22,7 +22,10 @@ module.exports = {
         },
     },
     rules: {
-        // 'no-unused-vars': 'off',
+        'no-unused-vars': [
+            'error',
+            {vars: 'all', args: 'after-used', ignoreRestSiblings: false},
+        ],
         'no-console': 'off',
         // A temporary hack related to IDE not resolving correct package.json
         'import/no-extraneous-dependencies': 'off',

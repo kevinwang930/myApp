@@ -13,21 +13,30 @@
       ],
       "env": {
           "DEBUG":"true",
+          "PYTHON_ENV":"DEBUG"
       }
     },
     {
       "name": "Electron: Renderer",
       "type": "pwa-chrome",
       "request": "attach",
-      "port": 9223,
+      "port": 9222,
       "webRoot": "${workspaceFolder}",
       "timeout": 35000
+    },
+    {
+        "name": "Python:service",
+        "type": "python",
+        "request": "attach",
+        "listen": {
+            "port": 9223
+        },
     }
   ],
   "compounds": [
     {
       "name": "Electron: All",
-      "configurations": ["Electron: Main", "Electron: Renderer"]
+      "configurations": ["Electron: Main", "Electron: Renderer","Python:service"]
     }
   ]
 }

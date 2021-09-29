@@ -6,20 +6,20 @@ const {app, ipcMain} = require('electron')
 const fs = require('fs')
 const {mainLog, pythonLog} = require('./log')
 const {srcPath} = require('../../.erb/configs/webpack.paths')
-const {store} = require('./setting')
+const {store, config_filePath} = require('./setting')
 
 // database related
 
 let pythonService
 
-function startPythonServicePacked(sqliteFilePath) {
+function startPythonServicePacked() {
     const pythonExecPath = store.get('app.python.execPath')
     mainLog.info('start python service from ', pythonExecPath)
 
     pythonService = spawn(pythonExecPath, {
         env: {
             ...process.env,
-            SQLITE_PATH: sqliteFilePath,
+            CONFIG_FILEPATH: config_filePath,
         },
     })
 
@@ -32,7 +32,7 @@ function startPythonServicePacked(sqliteFilePath) {
     })
 }
 
-function startPythonServiceSrc(sqliteFilePath) {
+function startPythonServiceSrc() {
     mainLog.info('start python service')
 
     const pythonServicePath = path.resolve(
@@ -45,7 +45,7 @@ function startPythonServiceSrc(sqliteFilePath) {
         {
             env: {
                 ...process.env,
-                SQLITE_PATH: sqliteFilePath,
+                CONFIG_FILEPATH: config_filePath,
             },
         }
 
@@ -98,6 +98,10 @@ async function restartPythonService() {
 
 ipcMain.handle('start-pythonService', () => {
     startPythonService()
+})
+
+ipcMain.handle('restart-pythonService', () => {
+    restartPythonService()
 })
 
 module.exports = {

@@ -36,9 +36,12 @@ let mainWindow = null
 // 	sourceMapSupport.install()
 // }
 
-const isDevelopment =
-    process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true'
-
+// const isDevelopment =
+//     process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true'
+// if (isDevelopment) {
+//     const debug = require('electron-debug')
+//     debug()
+// }
 const installExtensions = async () => {
     const {
         default: install,
@@ -87,10 +90,7 @@ const createWindow = async () => {
         if (!mainWindow) {
             throw new Error('"mainWindow" is not defined')
         }
-        // if (isDevelopment) {
-        //     const debug = require('electron-debug')
-        //     debug()
-        // }
+
         if (process.env.START_MINIMIZED) {
             mainWindow.minimize()
         } else {

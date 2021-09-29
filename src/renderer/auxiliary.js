@@ -7,7 +7,7 @@ import {
 } from './api/db'
 import {log} from './log'
 
-export const supplierNameValidator = async (rule, value, callback) => {
+export const supplierNameValidator = async (rule, value) => {
     // log.debug(`in validator, value is ${value} value length ${value.length}`)
     if (!value) {
         return Promise.reject('公司名称必须')
@@ -45,36 +45,10 @@ export const objectTrimString_emptyToNull = (object) => {
     return processedObject
 }
 
-export const prepareFormResult = (object) => {
-    // set empty string and blank string to null
-    // trim string
-    // set undefined to null
-    const processedObject = {}
-    for (const [key, value] of Object.entries(object)) {
-        if (value === undefined || value === '') {
-            processedObject[key] = null
-        } else if (typeof value === 'string' || value instanceof String) {
-            const trimedValue = value.trim()
-            if (trimedValue === '') {
-                processedObject[key] = null
-            } else {
-                processedObject[key] = trimedValue
-            }
-        } else {
-            processedObject[key] = value
-        }
-    }
-    return processedObject
-}
-
 export const nonEmptyValidator = (rule, value, callback, cellName) => {
     if (!value) {
         return Promise.reject(`${cellName}不能为空`)
     }
-    return Promise.resolve()
-}
-
-export const emptyValidator = (rule, value, callback) => {
     return Promise.resolve()
 }
 
@@ -99,7 +73,7 @@ export const productNoUpdateValidator = async (
     return Promise.resolve()
 }
 
-export const orderNoCreateValidator = async (rule, value, callback) => {
+export const orderNoCreateValidator = async (rule, value) => {
     if (!value) {
         return Promise.reject('订单编号不能为空')
     }

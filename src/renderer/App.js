@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react'
+import React from 'react'
 import {MemoryRouter} from 'react-router-dom'
 import Route from 'react-router-cache-route'
 import {Layout} from 'antd'
@@ -17,9 +17,8 @@ import {ProductUpdate} from './pages/productUpdate'
 import {Data} from './pages/data'
 import {Test} from './pages/test'
 import {NavBar} from './pages/navBar'
-
+import {Setting} from './pages/setting'
 // import {  initStore } from './app/store'
-import {log} from './log'
 import './App.global.css'
 
 export default function App() {
@@ -49,6 +48,7 @@ export default function App() {
                     <Route exact path="/orderDetail" component={OrderDetail} />
                     <Route exact path="/suppliers" component={Suppliers} />
                     <Route exact path="/database" component={Database} />
+                    <Route exact path="/setting" component={Setting} />
                     <Route
                         exact
                         path="/supplierUpdate"

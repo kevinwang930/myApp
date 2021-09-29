@@ -1,21 +1,19 @@
-import React, {useEffect, useState} from 'react'
+import React, {useState} from 'react'
 import {useDispatch, useSelector} from 'react-redux'
-import {Form, Input, Button, message, Select, Space} from 'antd'
+
+import {MinusCircleOutlined, PlusOutlined} from '@ant-design/icons'
+import {Form, Input, Button, message, Select} from 'antd'
 import {createProducts} from '../selectors/productsSlice'
 import {selectSupplierOptions} from '../selectors/suppliersSlice'
 
 import {log} from '../log'
-
-import {strict as assert} from 'assert'
-import {MinusCircleOutlined, PlusOutlined} from '@ant-design/icons'
-
+import {prepareFormResult} from '../utils'
 import {trimWhitespace} from '../auxiliary'
 import {checkProductNoExistInSupplier} from '../api/db'
-import {prepareFormResult} from '../auxiliary'
 
 const FormItem = Form.Item
 const {TextArea} = Input
-export function ProductsCreateView(props) {
+export function ProductsCreateView() {
     const dispatch = useDispatch()
     const supplierOptions = useSelector(selectSupplierOptions)
     const [supplier, setSupplier] = useState({id: null, name: null})
@@ -37,9 +35,8 @@ export function ProductsCreateView(props) {
         const previousProducts = form.getFieldValue('products').slice(0, index)
         if (previousProducts && previousProducts.length) {
             return previousProducts.map((product) => product.productNo)
-        } else {
-            return []
         }
+        return []
     }
 
     const productNoValidator = (rule, value, callback, name) => {
@@ -48,17 +45,16 @@ export function ProductsCreateView(props) {
         }
 
         const index = parseInt(name)
-        let previousProductNos = getPreviousProductNos(index)
+        const previousProductNos = getPreviousProductNos(index)
         if (previousProductNos.includes(value)) {
             return Promise.reject('编号重复')
         }
 
-        let exist = checkProductNoExistInSupplier(supplier.id, value)
+        const exist = checkProductNoExistInSupplier(supplier.id, value)
         if (exist) {
             return Promise.reject('编号产品已存在')
-        } else {
-            return Promise.resolve()
         }
+        return Promise.resolve()
     }
 
     const onFinish = async (updateInfo) => {
@@ -69,7 +65,7 @@ export function ProductsCreateView(props) {
             })
         }
         const productsInfo = updateInfo.products.map((product) => {
-            let processedProduct = prepareFormResult(product)
+            const processedProduct = prepareFormResult(product)
 
             processedProduct.supplierId = updateInfo.supplierId
             return processedProduct
@@ -95,20 +91,20 @@ export function ProductsCreateView(props) {
             span: 12,
         },
     }
-    const inlineLayout = {
-        labelCol: {
-            span: 2,
-        },
-        wrapperCol: {
-            span: 12,
-        },
-    }
-    const tailLayout = {
-        wrapperCol: {
-            offset: 5,
-            span: 10,
-        },
-    }
+    // const inlineLayout = {
+    //     labelCol: {
+    //         span: 2,
+    //     },
+    //     wrapperCol: {
+    //         span: 12,
+    //     },
+    // }
+    // const tailLayout = {
+    //     wrapperCol: {
+    //         offset: 5,
+    //         span: 10,
+    //     },
+    // }
 
     return (
         <Form

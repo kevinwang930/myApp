@@ -35,3 +35,38 @@ export function sqlite_initConnect() {
 
     sqlite_connect()
 }
+
+export const prepareFormResult = (object) => {
+    // set empty string and blank string to null
+    // trim string
+    // set undefined to null
+    const processedObject = {}
+    for (const [key, value] of Object.entries(object)) {
+        if (value === undefined || value === '') {
+            processedObject[key] = null
+        } else if (typeof value === 'string' || value instanceof String) {
+            const trimedValue = value.trim()
+            if (trimedValue === '') {
+                processedObject[key] = null
+            } else {
+                processedObject[key] = trimedValue
+            }
+        } else {
+            processedObject[key] = value
+        }
+    }
+    return processedObject
+}
+
+export function findDuplicateInArray(array, value) {
+    let occurTimes = 0
+    array.forEach((element) => {
+        if (element === value) {
+            occurTimes += 1
+        }
+    })
+    if (occurTimes >= 2) {
+        return true
+    }
+    return false
+}

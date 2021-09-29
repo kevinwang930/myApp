@@ -8,11 +8,10 @@ import {
     MenuOutlined,
     DatabaseOutlined,
     BugOutlined,
+    SettingOutlined,
 } from '@ant-design/icons'
 import {NavLink} from 'react-router-dom'
 import {setSelectedPage, getSelectedPage} from '../selectors/menuSlice'
-
-const {SubMenu} = Menu
 
 function NavSubMenu({to, icon, children}) {
     return (
@@ -21,7 +20,7 @@ function NavSubMenu({to, icon, children}) {
         </NavLink>
     )
 }
-export function NavBar(props) {
+export function NavBar() {
     const dispatch = useDispatch()
     const selectedPage = useSelector(getSelectedPage)
     const onPageChange = ({key}) => {
@@ -84,6 +83,11 @@ export function NavBar(props) {
             <Menu.Item key="database" icon={<DatabaseOutlined />}>
                 <NavLink to="/database">
                     <span>数据库</span>
+                </NavLink>
+            </Menu.Item>
+            <Menu.Item key="setting" icon={<SettingOutlined />}>
+                <NavLink to="/setting">
+                    <span>设置</span>
                 </NavLink>
             </Menu.Item>
 

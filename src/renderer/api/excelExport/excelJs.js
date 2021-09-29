@@ -1,18 +1,19 @@
-import {notification, Button} from 'antd'
-import Excel from 'exceljs'
-import {checkFileWritable} from '../../utils'
+import {notification} from 'antd'
+// import Excel from 'exceljs'
+import {Workbook} from 'exceljs/excel'
 import open from 'open'
+import {checkFileWritable} from '../../utils'
 
-export async function orderExcelReportAction({
+export async function orderExcelExportAction(
     orderData,
     templatePath,
     orderCellPosition,
     orderSheetName,
-    reportName,
-    reportPath,
-}) {
+    exportName,
+    exportPath
+) {
     try {
-        await checkFileWritable(reportPath)
+        await checkFileWritable(exportPath)
     } catch (e) {
         notification.error({
             message: e.message,
@@ -20,7 +21,7 @@ export async function orderExcelReportAction({
         })
         return
     }
-    let workbook = new Excel.Workbook()
+    const workbook = new Workbook()
 
     await workbook.xlsx.readFile(templatePath)
     workbook.creator = 'kevin Wang'
@@ -29,15 +30,16 @@ export async function orderExcelReportAction({
     writeSupplier(orderSheet, orderData.supplier, orderCellPosition)
     writeOrder(orderSheet, orderData, orderCellPosition)
     writeOrderItems(orderSheet, orderData.orderItems, orderCellPosition)
-    await saveFile(workbook, orderData.orderNo, reportPath)
+    await saveFile(workbook, orderData.orderNo, exportPath)
 }
 
 function writeSupplier(orderSheet, supplierInfo, orderCellPosition) {
     orderSheet.getCell(orderCellPosition.supplierName).value = supplierInfo.name
     orderSheet.getCell(orderCellPosition.supplierContact).value =
         supplierInfo.contact
-    orderSheet.getCell(orderCellPosition.supplierPhone).value =
-        supplierInfo.cellphone + '/' + supplierInfo.telephone
+    orderSheet.getCell(
+        orderCellPosition.supplierPhone
+    ).value = `${supplierInfo.cellphone}/${supplierInfo.telephone}`
 }
 
 function writeOrder(orderSheet, orderData, orderCellPosition) {
@@ -45,7 +47,7 @@ function writeOrder(orderSheet, orderData, orderCellPosition) {
 }
 
 function writeOrderItems(orderSheet, orderItemsData, orderCellPosition) {
-    let startCell = orderSheet.getCell(orderCellPosition.orderItemsRef)
+    const startCell = orderSheet.getCell(orderCellPosition.orderItemsRef)
     orderSheet.addTable({
         name: 'orderItemsTable',
         ref: orderCellPosition.orderItemsRef,
@@ -61,11 +63,11 @@ function writeOrderItems(orderSheet, orderItemsData, orderCellPosition) {
             {name: '金额', filterButton: false, totalsRowFunction: 'sum'},
         ],
         rows: orderItemsData.map((orderItemData, index) => {
-            let priceAddress = orderSheet.getCell(
+            const priceAddress = orderSheet.getCell(
                 startCell.row + index + 1,
                 startCell.col + 3
             ).address
-            let quantityAddress = orderSheet.getCell(
+            const quantityAddress = orderSheet.getCell(
                 startCell.row + index + 1,
                 startCell.col + 4
             ).address
@@ -81,21 +83,20 @@ function writeOrderItems(orderSheet, orderItemsData, orderCellPosition) {
     })
 }
 
-async function saveFile(workbook, orderNo, reportPath) {
+async function saveFile(workbook, orderNo, exportPath) {
     try {
-        await workbook.xlsx.writeFile(reportPath)
+        await workbook.xlsx.writeFile(exportPath)
         notification.success({
             message: '订单导出成功',
-            description: `订单导出目录 ${reportPath}`,
-            key: orderNo,
+            description: `订单导出目录 ${exportPath}`,
+            key: 'orderExport',
         })
-        open(reportPath, (err, stdout, stderr) => {
+        open(exportPath, (err) => {
             if (err) {
                 notification.error({
                     message: err,
-                    key: orderNo,
+                    key: 'orderExport',
                 })
-                return
             }
         })
     } catch (e) {
@@ -103,17 +104,17 @@ async function saveFile(workbook, orderNo, reportPath) {
             message: e.code,
             description: e.message,
             duration: 0,
-            key: orderNo,
+            key: 'orderExport',
         })
     }
 }
 
-export async function importOrder(filePath) {
-    let workbook = new Excel.Workbook()
+// export async function importOrder(filePath) {
+//     const workbook = new Excel.Workbook()
 
-    await workbook.xlsx.readFile(filePath)
-    let orderSheet = workbook.getWorksheet('order')
-    console.log(orderSheet.getCell('G7').value)
-    let table = orderSheet.getTable('orderItemsTable')
-    console.log(table.ref)
-}
+//     await workbook.xlsx.readFile(filePath)
+//     const orderSheet = workbook.getWorksheet('order')
+//     console.log(orderSheet.getCell('G7').value)
+//     const table = orderSheet.getTable('orderItemsTable')
+//     console.log(table.ref)
+// }

@@ -1,5 +1,6 @@
 import {access, open} from 'fs/promises'
-import {constants, existsSync} from 'fs'
+import {constants, existsSync, mkdirSync} from 'fs'
+import path from 'path'
 import {
     sqlite_getOrCreatePath,
     sqlite_createLoadSchema,
@@ -58,6 +59,25 @@ export const prepareFormResult = (object) => {
     return processedObject
 }
 
+export const prepareInputResult = (inputString) => {
+    if (inputString && inputString.length >= 0) {
+        const result = inputString.trim()
+        if (result.length) {
+            return result
+        }
+        return null
+    }
+    return null
+}
+
+export const preparePathInputResult = (inputString) => {
+    const inputResult = prepareInputResult(inputString)
+    if (inputResult) {
+        return path.resolve(inputResult)
+    }
+    return null
+}
+
 export function findDuplicateInArray(array, value) {
     let occurTimes = 0
     array.forEach((element) => {
@@ -69,4 +89,19 @@ export function findDuplicateInArray(array, value) {
         return true
     }
     return false
+}
+
+const pathRegex = /^[a-z]:((\\|\/|\\\\)[a-z0-9\s_@\-^!#$%&+={}\[\]]+)+$/i
+
+export function validatePath(pathString) {
+    if (pathRegex.test(pathString)) {
+        return true
+    }
+    return false
+}
+
+export function ensurePathExists(pathString) {
+    if (!existsSync(pathString)) {
+        mkdirSync(pathString, {recursive: true})
+    }
 }

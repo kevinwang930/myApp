@@ -11,6 +11,7 @@ from google.protobuf import symbol_database as _symbol_database
 _sym_db = _symbol_database.Default()
 
 
+from google.protobuf import empty_pb2 as google_dot_protobuf_dot_empty__pb2
 
 
 DESCRIPTOR = _descriptor.FileDescriptor(
@@ -19,8 +20,9 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   syntax='proto3',
   serialized_options=b'\242\002\003HLW',
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n\x0ejsPython.proto\x12\x08jsPython\"\x1c\n\x0cHelloRequest\x12\x0c\n\x04name\x18\x01 \x01(\t\"\x1d\n\nHelloReply\x12\x0f\n\x07message\x18\x01 \x01(\t\"%\n\x12orderExportRequest\x12\x0f\n\x07orderNo\x18\x01 \x01(\t\"D\n\x10orderExportReply\x12\x0e\n\x06result\x18\x01 \x01(\x08\x12\x14\n\x07message\x18\x02 \x01(\tH\x00\x88\x01\x01\x42\n\n\x08_message\"+\n\x15supplierReportRequest\x12\x12\n\nsupplierId\x18\x01 \x01(\r\"E\n\x11resultWithMessage\x12\x0e\n\x06result\x18\x01 \x01(\x08\x12\x14\n\x07message\x18\x02 \x01(\tH\x00\x88\x01\x01\x42\n\n\x08_message2\xf0\x01\n\rCommunication\x12:\n\x08sayHello\x12\x16.jsPython.HelloRequest\x1a\x14.jsPython.HelloReply\"\x00\x12N\n\x10orderExcelReport\x12\x1c.jsPython.orderExportRequest\x1a\x1a.jsPython.orderExportReply\"\x00\x12S\n\x11supplierPdfReport\x12\x1f.jsPython.supplierReportRequest\x1a\x1b.jsPython.resultWithMessage\"\x00\x42\x06\xa2\x02\x03HLWb\x06proto3'
-)
+  serialized_pb=b'\n\x0ejsPython.proto\x12\x08jsPython\x1a\x1bgoogle/protobuf/empty.proto\"\x1c\n\x0cHelloRequest\x12\x0c\n\x04name\x18\x01 \x01(\t\"\x1d\n\nHelloReply\x12\x0f\n\x07message\x18\x01 \x01(\t\"%\n\x12orderExportRequest\x12\x0f\n\x07orderNo\x18\x01 \x01(\t\"D\n\x10orderExportReply\x12\x0e\n\x06result\x18\x01 \x01(\x08\x12\x14\n\x07message\x18\x02 \x01(\tH\x00\x88\x01\x01\x42\n\n\x08_message\"+\n\x15supplierReportRequest\x12\x12\n\nsupplierId\x18\x01 \x01(\r\"E\n\x11resultWithMessage\x12\x0e\n\x06result\x18\x01 \x01(\x08\x12\x14\n\x07message\x18\x02 \x01(\tH\x00\x88\x01\x01\x42\n\n\x08_message\"\x1e\n\x0esetPathRequest\x12\x0c\n\x04path\x18\x01 \x01(\t2\xf7\x02\n\rCommunication\x12:\n\x08sayHello\x12\x16.jsPython.HelloRequest\x1a\x14.jsPython.HelloReply\"\x00\x12N\n\x10orderExcelReport\x12\x1c.jsPython.orderExportRequest\x1a\x1a.jsPython.orderExportReply\"\x00\x12S\n\x11supplierPdfReport\x12\x1f.jsPython.supplierReportRequest\x1a\x1b.jsPython.resultWithMessage\"\x00\x12@\n\x0creloadConfig\x12\x16.google.protobuf.Empty\x1a\x16.google.protobuf.Empty\"\x00\x12\x43\n\rsetOutputPath\x12\x18.jsPython.setPathRequest\x1a\x16.google.protobuf.Empty\"\x00\x42\x06\xa2\x02\x03HLWb\x06proto3'
+  ,
+  dependencies=[google_dot_protobuf_dot_empty__pb2.DESCRIPTOR,])
 
 
 
@@ -52,8 +54,8 @@ _HELLOREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=28,
-  serialized_end=56,
+  serialized_start=57,
+  serialized_end=85,
 )
 
 
@@ -84,8 +86,8 @@ _HELLOREPLY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=58,
-  serialized_end=87,
+  serialized_start=87,
+  serialized_end=116,
 )
 
 
@@ -116,8 +118,8 @@ _ORDEREXPORTREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=89,
-  serialized_end=126,
+  serialized_start=118,
+  serialized_end=155,
 )
 
 
@@ -160,8 +162,8 @@ _ORDEREXPORTREPLY = _descriptor.Descriptor(
       create_key=_descriptor._internal_create_key,
     fields=[]),
   ],
-  serialized_start=128,
-  serialized_end=196,
+  serialized_start=157,
+  serialized_end=225,
 )
 
 
@@ -192,8 +194,8 @@ _SUPPLIERREPORTREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=198,
-  serialized_end=241,
+  serialized_start=227,
+  serialized_end=270,
 )
 
 
@@ -236,8 +238,40 @@ _RESULTWITHMESSAGE = _descriptor.Descriptor(
       create_key=_descriptor._internal_create_key,
     fields=[]),
   ],
-  serialized_start=243,
-  serialized_end=312,
+  serialized_start=272,
+  serialized_end=341,
+)
+
+
+_SETPATHREQUEST = _descriptor.Descriptor(
+  name='setPathRequest',
+  full_name='jsPython.setPathRequest',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='path', full_name='jsPython.setPathRequest.path', index=0,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=343,
+  serialized_end=373,
 )
 
 _ORDEREXPORTREPLY.oneofs_by_name['_message'].fields.append(
@@ -252,6 +286,7 @@ DESCRIPTOR.message_types_by_name['orderExportRequest'] = _ORDEREXPORTREQUEST
 DESCRIPTOR.message_types_by_name['orderExportReply'] = _ORDEREXPORTREPLY
 DESCRIPTOR.message_types_by_name['supplierReportRequest'] = _SUPPLIERREPORTREQUEST
 DESCRIPTOR.message_types_by_name['resultWithMessage'] = _RESULTWITHMESSAGE
+DESCRIPTOR.message_types_by_name['setPathRequest'] = _SETPATHREQUEST
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
 
 HelloRequest = _reflection.GeneratedProtocolMessageType('HelloRequest', (_message.Message,), {
@@ -296,6 +331,13 @@ resultWithMessage = _reflection.GeneratedProtocolMessageType('resultWithMessage'
   })
 _sym_db.RegisterMessage(resultWithMessage)
 
+setPathRequest = _reflection.GeneratedProtocolMessageType('setPathRequest', (_message.Message,), {
+  'DESCRIPTOR' : _SETPATHREQUEST,
+  '__module__' : 'jsPython_pb2'
+  # @@protoc_insertion_point(class_scope:jsPython.setPathRequest)
+  })
+_sym_db.RegisterMessage(setPathRequest)
+
 
 DESCRIPTOR._options = None
 
@@ -306,8 +348,8 @@ _COMMUNICATION = _descriptor.ServiceDescriptor(
   index=0,
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_start=315,
-  serialized_end=555,
+  serialized_start=376,
+  serialized_end=751,
   methods=[
   _descriptor.MethodDescriptor(
     name='sayHello',
@@ -336,6 +378,26 @@ _COMMUNICATION = _descriptor.ServiceDescriptor(
     containing_service=None,
     input_type=_SUPPLIERREPORTREQUEST,
     output_type=_RESULTWITHMESSAGE,
+    serialized_options=None,
+    create_key=_descriptor._internal_create_key,
+  ),
+  _descriptor.MethodDescriptor(
+    name='reloadConfig',
+    full_name='jsPython.Communication.reloadConfig',
+    index=3,
+    containing_service=None,
+    input_type=google_dot_protobuf_dot_empty__pb2._EMPTY,
+    output_type=google_dot_protobuf_dot_empty__pb2._EMPTY,
+    serialized_options=None,
+    create_key=_descriptor._internal_create_key,
+  ),
+  _descriptor.MethodDescriptor(
+    name='setOutputPath',
+    full_name='jsPython.Communication.setOutputPath',
+    index=4,
+    containing_service=None,
+    input_type=_SETPATHREQUEST,
+    output_type=google_dot_protobuf_dot_empty__pb2._EMPTY,
     serialized_options=None,
     create_key=_descriptor._internal_create_key,
   ),

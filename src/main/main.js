@@ -12,7 +12,6 @@
 const path = require('path')
 const {app, BrowserWindow, shell, ipcMain, dialog} = require('electron')
 const {autoUpdater} = require('electron-updater')
-const log = require('electron-log')
 const fs = require('fs')
 const {store} = require('./setting')
 const {mainLog} = require('./log')
@@ -23,7 +22,6 @@ startPythonService()
 
 class AppUpdater {
     constructor() {
-        log.transports.file.level = 'info'
         autoUpdater.logger = mainLog
         autoUpdater.checkForUpdatesAndNotify()
     }
@@ -55,7 +53,7 @@ const installExtensions = async () => {
 }
 
 const createWindow = async () => {
-    log.debug('start create window')
+    mainLog.debug('start create window')
     if (
         process.env.NODE_ENV === 'development' ||
         process.env.DEBUG_PROD === 'true'
@@ -69,7 +67,7 @@ const createWindow = async () => {
     }
 
     const iconPath = getAssetPath('icon.png')
-    log.debug('icon path', iconPath)
+    mainLog.debug('icon path', iconPath)
     mainWindow = new BrowserWindow({
         show: true,
         width: 1024,

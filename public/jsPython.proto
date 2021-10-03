@@ -18,7 +18,7 @@ syntax = "proto3";
 // option java_package = "io.grpc.examples.helloworld";
 // option java_outer_classname = "HelloWorldProto";
 option objc_class_prefix = "HLW";
-
+import "google/protobuf/empty.proto";
 package jsPython;
 
 // The greeting service definition.
@@ -27,6 +27,8 @@ service Communication {
   rpc sayHello (HelloRequest) returns (HelloReply) {}
   rpc orderExcelReport(orderExportRequest) returns (orderExportReply) {}
   rpc supplierPdfReport(supplierReportRequest) returns (resultWithMessage) {}
+  rpc reloadConfig(google.protobuf.Empty) returns (google.protobuf.Empty)  {}
+  rpc setOutputPath(setPathRequest) returns (google.protobuf.Empty) {}
 }
 
 // The request message containing the user's name.
@@ -55,4 +57,8 @@ message supplierReportRequest {
 message resultWithMessage {
   bool result = 1;
   optional string message = 2;
+}
+
+message setPathRequest {
+    string path = 1;
 }

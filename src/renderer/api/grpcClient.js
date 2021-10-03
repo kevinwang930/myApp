@@ -48,3 +48,11 @@ export function sayHello() {
         }
     })
 }
+
+export function reloadConfig() {
+    client.reloadConfig(null, () => {})
+}
+
+export function setOutputPath(pathString) {
+    client.setOutputPath({path: pathString}, () => {})
+}

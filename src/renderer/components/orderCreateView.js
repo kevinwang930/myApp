@@ -6,13 +6,13 @@ import {
     Row,
     Col,
     Descriptions,
-    Space,
     InputNumber,
     message,
     notification,
 } from 'antd'
 import {useDispatch, useSelector} from 'react-redux'
 import React, {useState, useEffect} from 'react'
+import {MinusCircleOutlined, PlusOutlined} from '@ant-design/icons'
 import {insertOrderRedux} from '../selectors/ordersSlice'
 import {
     selectSupplierById,
@@ -26,8 +26,6 @@ import {
     trimWhitespace,
     objectTrimString_emptyToNull,
 } from '../auxiliary'
-
-import {MinusCircleOutlined, PlusOutlined} from '@ant-design/icons'
 
 const FormItem = Form.Item
 const DescItem = Descriptions.Item
@@ -61,7 +59,7 @@ export const OrderCreateView = () => {
         orderItemKey,
         orderItemName
     ) {
-        let selected = {...selectedProducts}
+        const selected = {...selectedProducts}
 
         const product = products[newProductId]
         form.setFields([
@@ -91,7 +89,7 @@ export const OrderCreateView = () => {
     }
 
     const onProductClear = (orderItemKey, orderItemName) => {
-        let selected = {...selectedProducts}
+        const selected = {...selectedProducts}
 
         form.setFields([
             {
@@ -120,15 +118,14 @@ export const OrderCreateView = () => {
 
         if (selectedProducts[value].size > 1) {
             return Promise.reject('产品已存在')
-        } else {
-            return Promise.resolve()
         }
+        return Promise.resolve()
     }
 
     const onOrderItemDelete = (orderItemKey, name, removeFun) => {
-        let productId = form.getFieldValue(['orderItems', name, 'productId'])
+        const productId = form.getFieldValue(['orderItems', name, 'productId'])
         if (productId) {
-            let selected = {...selectedProducts}
+            const selected = {...selectedProducts}
             selected[productId].delete(orderItemKey)
             setSelectedProducts(selected)
         }
@@ -136,17 +133,16 @@ export const OrderCreateView = () => {
         onTotalAmountChange()
     }
     const onTotalAmountChange = () => {
-        let orderItems = form.getFieldValue('orderItems')
+        const orderItems = form.getFieldValue('orderItems')
         const reducer = (accumulator, currentItem) => {
             if (currentItem && currentItem.price && currentItem.quantity) {
-                accumulator =
-                    accumulator + currentItem.price * currentItem.quantity
+                accumulator += currentItem.price * currentItem.quantity
             }
             return accumulator
         }
-        let totalAmount = orderItems.reduce(reducer, 0)
+        const totalAmount = orderItems.reduce(reducer, 0)
         form.setFieldsValue({
-            totalAmount: totalAmount,
+            totalAmount,
         })
     }
 
@@ -158,11 +154,11 @@ export const OrderCreateView = () => {
             })
         }
 
-        let orderInfo = {
+        const orderInfo = {
             orderNo: pageInfo.orderNo.trim(),
             supplierId: pageInfo.supplierId,
         }
-        let orderItemsInfo = pageInfo.orderItems.map((originalValue) => {
+        const orderItemsInfo = pageInfo.orderItems.map((originalValue) => {
             return objectTrimString_emptyToNull(originalValue)
         })
 
@@ -235,7 +231,7 @@ export const OrderCreateView = () => {
                             onChange={onSupplierChange}
                         />
                     </FormItem>
-                    <div className="w-2/12"></div>
+                    <div className="w-2/12" />
                     <FormItem
                         label="订单编号"
                         name="orderNo"

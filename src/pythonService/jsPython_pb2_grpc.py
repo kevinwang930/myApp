@@ -2,6 +2,7 @@
 """Client and server classes corresponding to protobuf-defined services."""
 import grpc
 
+from google.protobuf import empty_pb2 as google_dot_protobuf_dot_empty__pb2
 import jsPython_pb2 as jsPython__pb2
 
 
@@ -30,6 +31,16 @@ class CommunicationStub(object):
                 request_serializer=jsPython__pb2.supplierReportRequest.SerializeToString,
                 response_deserializer=jsPython__pb2.resultWithMessage.FromString,
                 )
+        self.reloadConfig = channel.unary_unary(
+                '/jsPython.Communication/reloadConfig',
+                request_serializer=google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
+                response_deserializer=google_dot_protobuf_dot_empty__pb2.Empty.FromString,
+                )
+        self.setOutputPath = channel.unary_unary(
+                '/jsPython.Communication/setOutputPath',
+                request_serializer=jsPython__pb2.setPathRequest.SerializeToString,
+                response_deserializer=google_dot_protobuf_dot_empty__pb2.Empty.FromString,
+                )
 
 
 class CommunicationServicer(object):
@@ -55,6 +66,18 @@ class CommunicationServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def reloadConfig(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def setOutputPath(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_CommunicationServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -72,6 +95,16 @@ def add_CommunicationServicer_to_server(servicer, server):
                     servicer.supplierPdfReport,
                     request_deserializer=jsPython__pb2.supplierReportRequest.FromString,
                     response_serializer=jsPython__pb2.resultWithMessage.SerializeToString,
+            ),
+            'reloadConfig': grpc.unary_unary_rpc_method_handler(
+                    servicer.reloadConfig,
+                    request_deserializer=google_dot_protobuf_dot_empty__pb2.Empty.FromString,
+                    response_serializer=google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
+            ),
+            'setOutputPath': grpc.unary_unary_rpc_method_handler(
+                    servicer.setOutputPath,
+                    request_deserializer=jsPython__pb2.setPathRequest.FromString,
+                    response_serializer=google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -132,5 +165,39 @@ class Communication(object):
         return grpc.experimental.unary_unary(request, target, '/jsPython.Communication/supplierPdfReport',
             jsPython__pb2.supplierReportRequest.SerializeToString,
             jsPython__pb2.resultWithMessage.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def reloadConfig(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/jsPython.Communication/reloadConfig',
+            google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
+            google_dot_protobuf_dot_empty__pb2.Empty.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def setOutputPath(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/jsPython.Communication/setOutputPath',
+            jsPython__pb2.setPathRequest.SerializeToString,
+            google_dot_protobuf_dot_empty__pb2.Empty.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

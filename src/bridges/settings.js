@@ -13,6 +13,9 @@ export function getOutputPath() {
     }
     throw new Error('输出路径未定义')
 }
+export async function setOutputPath(pathString) {
+    ipcRenderer.invoke('set-output-path', pathString)
+}
 export function getSqliteFilePath() {
     return ipcRenderer.sendSync('get-sqlite-file-path')
 }

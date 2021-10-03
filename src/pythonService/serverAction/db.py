@@ -11,18 +11,22 @@ connection = None
 def sqliteConnect():
     global connection, sqlitePath
     currentSqlitePath = getSqlitePath()
+    if not currentSqlitePath:
+        return False
     if connection:
         if currentSqlitePath == sqlitePath:
-            return
+            return True
         else:
             connection.close()
             sqlitePath = currentSqlitePath
             connection = sqlite3.connect(sqlitePath)
             connection.row_factory = sqlite3.Row
+            return True
     else:
         sqlitePath = currentSqlitePath
         connection = sqlite3.connect(sqlitePath)
         connection.row_factory = sqlite3.Row
+        return True
 
 
 class Order:
@@ -61,6 +65,3 @@ def getSupplier_db(supplierId):
         return supplier
     else:
         return False
-
-
-sqliteConnect()

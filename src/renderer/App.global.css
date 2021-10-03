@@ -12,7 +12,7 @@
 } */
 .side {
     position:fixed;
-    
+
     width: 192px;
 }
 
@@ -29,7 +29,7 @@
 }
 
 main {
-    
+
     margin-left: 192px;
     padding-left: 10px;
     padding-right: 10px;
@@ -39,11 +39,11 @@ main {
     /* overflow-y: scroll; */
 }
 header {
-    @apply  h-8 
+    @apply  h-8
 }
 main section{
 
-    @apply mt-10 
+    @apply mt-10
 
 }
 
@@ -70,7 +70,12 @@ h2 {
     @apply my-5 py-5 text-lg font-semibold
 }
 
-
+.settingBox {
+    border-radius: 2px;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    padding-left:1rem
+}
 
 .chartView {
     display: grid;

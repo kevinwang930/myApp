@@ -3,9 +3,9 @@ from openpyxl.utils import get_column_letter
 import os
 from pathlib import Path
 from ..setting import getOrderExcelTemplatePath, getOutputPath
-from serverAction.db import getOrder_db
+from ..db import getOrder_db, sqliteConnect
 import importlib
-from serverAction.utils import checkDestFileWritable
+from ..utils import checkDestFileWritable
 
 
 class OrderExcelReportBase:
@@ -22,6 +22,8 @@ class OrderExcelReportBase:
         self.templatePath = None
 
     def getOrderFromDb(self):
+        if not sqliteConnect():
+            return False
         order = getOrder_db(self.orderNo)
         if order:
             self.orderInfo = order.orderInfo

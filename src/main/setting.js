@@ -81,6 +81,10 @@ ipcMain.handle('open-store-in-editor', () => {
     store.openInEditor()
 })
 
+ipcMain.handle('set-output-path', (event, pathString) => {
+    store.set('outputPath', pathString)
+})
+
 ipcMain.on('get-sqlite-file-path', (event) => {
     event.returnValue = store.get('sqlite.filePath', null)
 })

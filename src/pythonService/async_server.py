@@ -20,6 +20,10 @@ import os
 from dotenv import load_dotenv
 import importlib
 
+from google.protobuf import empty_pb2
+
+empty = empty_pb2.Empty()
+
 import jsPython_pb2
 import jsPython_pb2_grpc
 import sys
@@ -31,7 +35,7 @@ logging.basicConfig(
     format="[python] [%(levelname)s] (%(filename)s) %(funcName)s(%(lineno)d): %(message)s",
 )
 
-from serverAction import orderExcelReport_openpyxl
+from serverAction import orderExcelReport_openpyxl, loadConfig, setOutputPath
 
 
 class JsPythonServer(jsPython_pb2_grpc.CommunicationServicer):
@@ -48,6 +52,14 @@ class JsPythonServer(jsPython_pb2_grpc.CommunicationServicer):
 
     async def supplierReportPdf(self, request, context):
         return jsPython_pb2.resultWithMessage(True, "this is supplier report test")
+
+    async def reloadConfig(self, request, context):
+        loadConfig()
+        return empty
+
+    async def setOutputPath(self, request, context):
+        setOutputPath(request.path)
+        return empty
 
 
 async def serve() -> None:

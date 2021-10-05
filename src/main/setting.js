@@ -1,23 +1,23 @@
 const {app, ipcMain} = require('electron')
 const Store = require('electron-store')
 const path = require('path')
+const fs = require('fs')
 
+function ensurePathExists(pathString) {
+    if (!fs.existsSync(pathString)) {
+        fs.mkdirSync(pathString, {recursive: true})
+    }
+}
+const appName = app.getName()
 const configDir = app.getPath('userData')
 const config_filePath = path.resolve(configDir, 'myconfig.json')
 const config_outputPath = path.resolve(configDir, 'output')
 const config_templatePath = path.resolve(configDir, 'template')
 const config_sqlitePath = path.resolve(configDir, 'sqlite')
-const config_sqlite_storagePath = path.resolve(config_sqlitePath, 'storage')
-const config_sqlite_filePath = path.resolve(
-    config_sqlite_storagePath,
-    'order.sqlite'
-)
-const config_template_excelOrderPath = path.resolve(
-    config_templatePath,
-    'orderReport.xlsx'
-)
-const config_sqlite_schemaPath = path.resolve(config_sqlitePath, 'schema.sql')
-const config_sqlite_backupPath = path.resolve(config_sqlitePath, 'backup')
+
+ensurePathExists(config_outputPath)
+ensurePathExists(config_templatePath)
+ensurePathExists(config_sqlitePath)
 
 let appPath
 let app_assetsPath
@@ -38,32 +38,25 @@ if (app.isPackaged) {
 const app_publicPath = path.resolve(appPath, 'public')
 const app_templatePath = path.resolve(app_publicPath, 'template')
 const app_grpc_protoPath = path.resolve(app_publicPath, 'jsPython.proto')
-const app_dbPath = path.resolve(appPath, 'db')
-const app_sqlite_schemaPath = path.resolve(app_dbPath, 'sqlite_schema.sql')
-const app_template_excelOrderPath = path.resolve(
-    app_templatePath,
-    'orderReport.xlsx'
-)
+const app_sqlitePath = path.resolve(appPath, 'sqlite')
 
 const defaults = {
     outputPath: config_outputPath,
     templatePath: config_templatePath,
-    'sqlite.path': config_sqlitePath,
-    'sqlite.storagePath': config_sqlite_storagePath,
-    'sqlite.filePath': config_sqlite_filePath,
-    'sqlite.schemaPath': config_sqlite_schemaPath,
-    'sqlite.backupPath': config_sqlite_backupPath,
-    'template.excelOrderPath': config_template_excelOrderPath,
+    sqlitePath: config_sqlitePath,
+    'sqlite.relative.filePath': `${appName}.sqlite`,
+    'sqlite.relative.dumpPath': 'dump',
+    'sqlite.relative.schemaPath': 'schema.sql',
+    'sqlite.relative.backupPath': 'backup',
+    'template.relative.excelOrderPath': 'order.xlsx',
     'app.path': appPath,
     'app.assetsPath': app_assetsPath,
     'app.templatePath': app_templatePath,
     'app.publicPath': app_publicPath,
     'app.grpc.protoPath': app_grpc_protoPath,
-    'app.dbPath': app_dbPath,
-    'app.sqlite.schemaPath': app_sqlite_schemaPath,
+    'app.sqlitePath': app_sqlitePath,
     'app.python.execPath': app_python_execPath,
     'app.python.srcPath': app_python_srcPath,
-    'app.template.excelOrderPath': app_template_excelOrderPath,
 }
 
 const store = new Store({
@@ -77,28 +70,98 @@ ipcMain.handle('store-reset', () => {
     store.reset(...Object.keys(defaults))
 })
 
+ipcMain.handle('store-clear', () => {
+    store.clear()
+})
+
 ipcMain.handle('open-store-in-editor', () => {
     store.openInEditor()
 })
 
 ipcMain.handle('set-output-path', (event, pathString) => {
+    ensurePathExists(pathString)
     store.set('outputPath', pathString)
 })
 
+ipcMain.handle('set-sqlite-path', (event, pathString) => {
+    ensurePathExists(pathString)
+    const dumpRelativePath = store.get('sqlite.relative.dumpPath', null)
+    const backupRelativePath = store.get('sqlite.relative.backupPath', null)
+    ensurePathExists(path.resolve(pathString, dumpRelativePath))
+    ensurePathExists(path.resolve(pathString, backupRelativePath))
+    store.set('sqlitePath', pathString)
+})
+
+ipcMain.handle('set-template-path', (event, pathString) => {
+    ensurePathExists(pathString)
+    store.set('templatePath', pathString)
+})
+
+function getSqliteFilePath() {
+    const sqlitePath = store.get('sqlitePath', null)
+    const filePath = store.get('sqlite.relative.filePath', null)
+    if (sqlitePath && filePath) {
+        return path.resolve(sqlitePath, filePath)
+    }
+    return null
+}
+
+ipcMain.on('get-sqlite-path', (event) => {
+    event.returnValue = store.get('sqlitePath', null)
+})
+
 ipcMain.on('get-sqlite-file-path', (event) => {
-    event.returnValue = store.get('sqlite.filePath', null)
+    event.returnValue = getSqliteFilePath()
 })
 
 ipcMain.on('get-sqlite-schema-path', (event) => {
-    event.returnValue = store.get('sqlite.schemaPath', null)
+    const sqlitePath = store.get('sqlitePath', null)
+    const relativeSchemaPath = store.get('sqlite.relative.schemaPath', null)
+
+    const schemaPath = path.resolve(sqlitePath, relativeSchemaPath)
+    if (fs.existsSync(schemaPath)) {
+        event.returnValue = schemaPath
+    } else {
+        const appSqlitePath = store.get('app.sqlitePath', null)
+        const appSchemaPath = path.resolve(appSqlitePath, relativeSchemaPath)
+        if (fs.existsSync(appSchemaPath)) {
+            event.returnValue = appSchemaPath
+        } else {
+            event.returnValue = null
+        }
+    }
 })
 
 ipcMain.on('get-app-sqlite-schema-path', (event) => {
-    event.returnValue = store.get('app.sqlite.schemaPath', null)
+    const sqlitePath = store.get('app.sqlitePath', null)
+    const relativeSchemaPath = store.get('sqlite.relative.schemaPath', null)
+    if (sqlitePath && relativeSchemaPath) {
+        event.returnValue = path.resolve(sqlitePath, relativeSchemaPath)
+    } else {
+        event.returnValue = null
+    }
+})
+
+ipcMain.on('get-sqlite-dump-path', (event) => {
+    const sqlitePath = store.get('sqlitePath', null)
+    const relativeDumpPath = store.get('sqlite.relative.dumpPath', null)
+    if (sqlitePath && relativeDumpPath) {
+        const dumpPath = path.resolve(sqlitePath, relativeDumpPath)
+        ensurePathExists(dumpPath)
+        event.returnValue = dumpPath
+    } else {
+        event.returnValue = null
+    }
 })
 
 ipcMain.on('get-sqlite-backup-path', (event) => {
-    event.returnValue = store.get('sqlite.backupPath', null)
+    const sqlitePath = store.get('sqlitePath', null)
+    const relativeBackupPath = store.get('sqlite.relative.backupPath', null)
+    if (sqlitePath && relativeBackupPath) {
+        event.returnValue = path.resolve(sqlitePath, relativeBackupPath)
+    } else {
+        event.returnValue = null
+    }
 })
 
 ipcMain.on('get-output-path', (event) => {
@@ -110,12 +173,42 @@ ipcMain.on('get-grpc-proto-path', (event) => {
 })
 
 ipcMain.on('get-template-excelOrder-path', (event) => {
-    event.returnValue = store.get('template.excelOrderPath')
+    const templatePath = store.get('templatePath', null)
+    const relativeExcelOrderTemplatePath = store.get(
+        'template.relative.excelOrderPath',
+        null
+    )
+    let excelOrderTemplatePath = path.resolve(
+        templatePath,
+        relativeExcelOrderTemplatePath
+    )
+    if (excelOrderTemplatePath && fs.existsSync(excelOrderTemplatePath)) {
+        event.returnValue = excelOrderTemplatePath
+    } else {
+        const appTemplatePath = store.get('app.templatePath', null)
+        excelOrderTemplatePath = path.resolve(
+            appTemplatePath,
+            relativeExcelOrderTemplatePath
+        )
+        if (excelOrderTemplatePath && fs.existsSync(excelOrderTemplatePath)) {
+            event.returnValue = excelOrderTemplatePath
+        } else {
+            event.returnValue = null
+        }
+    }
 })
-ipcMain.on('get-app-template-excelOrder-path', (event) => {
-    event.returnValue = store.get('app.template.excelOrderPath')
-})
+
+// ipcMain.on('get-app-template-excelOrder-path', (event) => {
+//     const templatePath = store.get('app.templatePath', null)
+//     if (templatePath) {
+//         event.returnValue = path.resolve(templatePath, 'order.xlsx')
+//     } else {
+//         event.returnValue = null
+//     }
+// })
+
 module.exports = {
     store,
     config_filePath,
+    getSqliteFilePath,
 }

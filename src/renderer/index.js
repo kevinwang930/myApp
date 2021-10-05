@@ -7,9 +7,8 @@ import {Provider} from 'react-redux'
 import App from './app'
 
 import {store, clearStoreAndFetchData} from './app/store'
-
+import {sqlite_initConnect} from './api/db'
 import {log} from './log'
-import {sqlite_initConnect} from './utils'
 
 log.info(`node_env in ${process.env.NODE_ENV} mode `)
 

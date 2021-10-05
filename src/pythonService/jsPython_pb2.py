@@ -20,7 +20,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   syntax='proto3',
   serialized_options=b'\242\002\003HLW',
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n\x0ejsPython.proto\x12\x08jsPython\x1a\x1bgoogle/protobuf/empty.proto\"\x1c\n\x0cHelloRequest\x12\x0c\n\x04name\x18\x01 \x01(\t\"\x1d\n\nHelloReply\x12\x0f\n\x07message\x18\x01 \x01(\t\"%\n\x12orderExportRequest\x12\x0f\n\x07orderNo\x18\x01 \x01(\t\"D\n\x10orderExportReply\x12\x0e\n\x06result\x18\x01 \x01(\x08\x12\x14\n\x07message\x18\x02 \x01(\tH\x00\x88\x01\x01\x42\n\n\x08_message\"+\n\x15supplierReportRequest\x12\x12\n\nsupplierId\x18\x01 \x01(\r\"E\n\x11resultWithMessage\x12\x0e\n\x06result\x18\x01 \x01(\x08\x12\x14\n\x07message\x18\x02 \x01(\tH\x00\x88\x01\x01\x42\n\n\x08_message\"\x1e\n\x0esetPathRequest\x12\x0c\n\x04path\x18\x01 \x01(\t2\xf7\x02\n\rCommunication\x12:\n\x08sayHello\x12\x16.jsPython.HelloRequest\x1a\x14.jsPython.HelloReply\"\x00\x12N\n\x10orderExcelReport\x12\x1c.jsPython.orderExportRequest\x1a\x1a.jsPython.orderExportReply\"\x00\x12S\n\x11supplierPdfReport\x12\x1f.jsPython.supplierReportRequest\x1a\x1b.jsPython.resultWithMessage\"\x00\x12@\n\x0creloadConfig\x12\x16.google.protobuf.Empty\x1a\x16.google.protobuf.Empty\"\x00\x12\x43\n\rsetOutputPath\x12\x18.jsPython.setPathRequest\x1a\x16.google.protobuf.Empty\"\x00\x42\x06\xa2\x02\x03HLWb\x06proto3'
+  serialized_pb=b'\n\x0ejsPython.proto\x12\x08jsPython\x1a\x1bgoogle/protobuf/empty.proto\"\x1c\n\x0cHelloRequest\x12\x0c\n\x04name\x18\x01 \x01(\t\"\x1d\n\nHelloReply\x12\x0f\n\x07message\x18\x01 \x01(\t\"%\n\x12orderExportRequest\x12\x0f\n\x07orderNo\x18\x01 \x01(\t\"D\n\x10orderExportReply\x12\x0e\n\x06result\x18\x01 \x01(\x08\x12\x14\n\x07message\x18\x02 \x01(\tH\x00\x88\x01\x01\x42\n\n\x08_message\"+\n\x15supplierReportRequest\x12\x12\n\nsupplierId\x18\x01 \x01(\r\"E\n\x11resultWithMessage\x12\x0e\n\x06result\x18\x01 \x01(\x08\x12\x14\n\x07message\x18\x02 \x01(\tH\x00\x88\x01\x01\x42\n\n\x08_message\"\x1e\n\x0esetPathRequest\x12\x0c\n\x04path\x18\x01 \x01(\t2\x83\x04\n\rCommunication\x12:\n\x08sayHello\x12\x16.jsPython.HelloRequest\x1a\x14.jsPython.HelloReply\"\x00\x12N\n\x10orderExcelReport\x12\x1c.jsPython.orderExportRequest\x1a\x1a.jsPython.orderExportReply\"\x00\x12S\n\x11supplierPdfReport\x12\x1f.jsPython.supplierReportRequest\x1a\x1b.jsPython.resultWithMessage\"\x00\x12@\n\x0creloadConfig\x12\x16.google.protobuf.Empty\x1a\x16.google.protobuf.Empty\"\x00\x12\x43\n\rsetOutputPath\x12\x18.jsPython.setPathRequest\x1a\x16.google.protobuf.Empty\"\x00\x12\x43\n\rsetSqlitePath\x12\x18.jsPython.setPathRequest\x1a\x16.google.protobuf.Empty\"\x00\x12\x45\n\x0fsetTemplatePath\x12\x18.jsPython.setPathRequest\x1a\x16.google.protobuf.Empty\"\x00\x42\x06\xa2\x02\x03HLWb\x06proto3'
   ,
   dependencies=[google_dot_protobuf_dot_empty__pb2.DESCRIPTOR,])
 
@@ -349,7 +349,7 @@ _COMMUNICATION = _descriptor.ServiceDescriptor(
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
   serialized_start=376,
-  serialized_end=751,
+  serialized_end=891,
   methods=[
   _descriptor.MethodDescriptor(
     name='sayHello',
@@ -395,6 +395,26 @@ _COMMUNICATION = _descriptor.ServiceDescriptor(
     name='setOutputPath',
     full_name='jsPython.Communication.setOutputPath',
     index=4,
+    containing_service=None,
+    input_type=_SETPATHREQUEST,
+    output_type=google_dot_protobuf_dot_empty__pb2._EMPTY,
+    serialized_options=None,
+    create_key=_descriptor._internal_create_key,
+  ),
+  _descriptor.MethodDescriptor(
+    name='setSqlitePath',
+    full_name='jsPython.Communication.setSqlitePath',
+    index=5,
+    containing_service=None,
+    input_type=_SETPATHREQUEST,
+    output_type=google_dot_protobuf_dot_empty__pb2._EMPTY,
+    serialized_options=None,
+    create_key=_descriptor._internal_create_key,
+  ),
+  _descriptor.MethodDescriptor(
+    name='setTemplatePath',
+    full_name='jsPython.Communication.setTemplatePath',
+    index=6,
     containing_service=None,
     input_type=_SETPATHREQUEST,
     output_type=google_dot_protobuf_dot_empty__pb2._EMPTY,

@@ -5,7 +5,7 @@ import {Layout} from 'antd'
 
 import {Orders} from './pages/orders'
 import {Suppliers} from './pages/suppliers'
-import {Database} from './pages/database'
+
 import {SupplierUpdate} from './pages/supplierUpdate'
 import {SupplierCreate} from './pages/supplierCreate'
 import {SupplierAnalysis} from './pages/supplierAnalysis'
@@ -47,7 +47,7 @@ export default function App() {
                     <Route exact path="/orderCreate" component={OrderCreate} />
                     <Route exact path="/orderDetail" component={OrderDetail} />
                     <Route exact path="/suppliers" component={Suppliers} />
-                    <Route exact path="/database" component={Database} />
+                    {/* <Route exact path="/database" component={Database} /> */}
                     <Route exact path="/setting" component={Setting} />
                     <Route
                         exact

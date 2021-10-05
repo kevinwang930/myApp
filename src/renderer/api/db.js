@@ -1,20 +1,21 @@
 import Database from 'better-sqlite3'
 import {execSync} from 'child_process'
 import path from 'path'
-import {existsSync, mkdirSync, unlinkSync} from 'fs'
-
+import {existsSync, unlinkSync, copyFileSync} from 'fs'
+import date from 'date-and-time'
 import {log} from '../log'
 import {
     getSqliteFilePath,
     getSqliteSchemaPath,
-    getAppSqliteSchemaPath,
+    getSqliteDumpPath,
+    setSqlitePath,
+    getSqliteBackupPath,
 } from '../../bridges/settings'
 
-let db = null
-
+let connection = null
 let dataVersion
 
-const simpleOption = {simple: true} //  first colum of first row
+// const simpleOption = {simple: true} //  first colum of first row
 
 const prepareValueToDB = (value) => {
     if (typeof value === 'string' || value instanceof String) {
@@ -33,68 +34,73 @@ const prepareValueToDB = (value) => {
 }
 
 export function getDataVersion() {
-    dataVersion = db.pragma('data_version', {simple: true})
+    dataVersion = connection.pragma('data_version', {simple: true})
     return dataVersion
 }
 
-export function sqlite_getOrCreatePath() {
+export function sqlite_initConnect() {
     const sqliteFilePath = getSqliteFilePath()
 
-    let schemaPath = getSqliteSchemaPath()
-
-    if (!schemaPath || !existsSync(schemaPath)) {
-        schemaPath = getAppSqliteSchemaPath()
-
-        if (!schemaPath || !existsSync(schemaPath)) {
-            throw new Error('sqlite schema 不存在')
-        }
-    }
-    if (!sqliteFilePath) {
-        throw new Error('无法确定sqlite数据库地址')
-    }
     if (!existsSync(sqliteFilePath)) {
-        const dir = path.dirname(sqliteFilePath)
-        mkdirSync(dir, {recursive: true})
+        const schemaPath = getSqliteSchemaPath()
+        sqlite_createLoadSchema(sqliteFilePath, schemaPath)
     }
 
-    return {sqliteFilePath, schemaPath}
+    sqlite_connect(sqliteFilePath)
 }
 
-export function sqlite_connect() {
-    const sqliteFilePath = getSqliteFilePath()
-    if (!db) {
-        db = new Database(sqliteFilePath, {
+export function sqlite_connect(filePath = null) {
+    let sqliteFilePath
+    if (filePath) {
+        sqliteFilePath = filePath
+    } else {
+        sqliteFilePath = getSqliteFilePath()
+    }
+
+    if (!connection) {
+        connection = new Database(sqliteFilePath, {
             fileMustExist: true,
             verbose: log.debug,
         })
         log.debug(`sqlite connected ${sqliteFilePath}`)
     } else {
-        log.warn(`${db.name} already opened`)
+        log.warn(`${connection.name} already opened`)
     }
 
     getDataVersion()
-    db.pragma('foreign_keys=on')
-    const result = db.pragma('foreign_keys', simpleOption)
-
-    log.debug('database connected,foreign key status ', result)
+    connection.pragma('foreign_keys=on')
 }
 
-export function sqlite_close() {
-    db.close()
-    db = null
+export function sqlite_disconnect() {
+    if (connection) {
+        connection.close()
+        connection = null
+        log.debug('sqlite closed')
+    }
+}
+
+export function sqlite_changePath(newPath) {
+    sqlite_disconnect()
+    const oldSqliteFilePath = getSqliteFilePath()
+    setSqlitePath(newPath)
+    const newSqliteFilePath = getSqliteFilePath()
+    if (!existsSync(newSqliteFilePath)) {
+        copyFileSync(oldSqliteFilePath, newSqliteFilePath)
+    }
+    sqlite_connect(newSqliteFilePath)
 }
 
 export async function getSqliteVersion() {
-    const stmt = db.prepare('select sqlite_version() as version')
+    const stmt = connection.prepare('select sqlite_version() as version')
     return stmt.get().version
 }
 
 export function getForeignKeyStatus() {
-    return db.pragma('foreign_keys', {simple: true})
+    return connection.pragma('foreign_keys', {simple: true})
 }
 
 export function checkDataVersion() {
-    const version = db.pragma('data_version', {simple: true})
+    const version = connection.pragma('data_version', {simple: true})
     if (dataVersion === version) {
         return true
     }
@@ -104,7 +110,7 @@ export function checkDataVersion() {
 
 export const getOrderTotalAmount = async (id) => {
     try {
-        const result = db
+        const result = connection
             .prepare(
                 `
 		select sum(price*quantity) as totalAmount
@@ -123,7 +129,7 @@ export const getOrderTotalAmount = async (id) => {
 }
 
 export async function checkSupplierNameDuplicate(name) {
-    const result = db
+    const result = connection
         .prepare(`select id from suppliers where name = '${name}'`)
         .get()
     if (result) return true
@@ -131,7 +137,7 @@ export async function checkSupplierNameDuplicate(name) {
 }
 
 export function checkProductNoExistInSupplier(supplierId, productNo) {
-    const result = db
+    const result = connection
         .prepare(
             `
 		select * from products
@@ -146,7 +152,7 @@ export function checkProductNoExistInSupplier(supplierId, productNo) {
     return false
 }
 export const selectEntry = (tableName, select, condition) => {
-    const result = db
+    const result = connection
         .prepare(
             `
 		select ${select} from ${tableName}
@@ -160,12 +166,12 @@ export const selectEntry = (tableName, select, condition) => {
 export const selectMultipleEntries = (tableName, select, condition) => {
     let stmt
     if (condition) {
-        stmt = db.prepare(`
+        stmt = connection.prepare(`
 		select ${select} from ${tableName}
 			${condition}
 	    `)
     } else {
-        stmt = db.prepare(`
+        stmt = connection.prepare(`
 		select ${select} from ${tableName}
 	    `)
     }
@@ -202,7 +208,7 @@ export function getProductIdsAndOrderIdsBySupplierId(id) {
 }
 
 export const selectCount = (tablename, condition) => {
-    const result = db
+    const result = connection
         .prepare(
             `
 		select count(*) as count from ${tablename}
@@ -215,7 +221,7 @@ export const selectCount = (tablename, condition) => {
 
 export function getSuppliers() {
     try {
-        const suppliers = db
+        const suppliers = connection
             .prepare(
                 `select id,name,address,contact,cellPhone,telephone from suppliers`
             )
@@ -231,7 +237,7 @@ export function getSuppliers() {
 
 export function getOrders() {
     try {
-        const resultArray = db
+        const resultArray = connection
             .prepare(
                 `
 		select orders.id,orderNo,supplierId,
@@ -274,7 +280,7 @@ export function getOrders() {
 
 export const getOrderItems = () => {
     try {
-        const orderItems = db
+        const orderItems = connection
             .prepare(
                 `select id,orderId,productId,productNo,productName,description,price,quantity
 		from orderItems
@@ -312,7 +318,7 @@ export function checkOrderNoExist(value) {
 
 export const getSupplierOrderItemsSummary = (supplierId) => {
     try {
-        const supplierProducts = db
+        const supplierProducts = connection
             .prepare(
                 `
 			select productNo,productName,(productNo || '-' || productName) as productLabel, sum(price*quantity) as amount from orderItems
@@ -335,7 +341,7 @@ export const updateEntryById = (tableName, id, changes) => {
         setContent.push(`${key} = ${preparedValue}`)
     }
 
-    const stmt = db.prepare(`
+    const stmt = connection.prepare(`
 	update ${tableName}
 	set ${setContent.join()}
 	where id = ${id}
@@ -354,11 +360,13 @@ export const updateOrderItemById = (id, changes) =>
 
 export const deleteEntryById = async (tableName, id) => {
     try {
-        db.prepare(
-            `
+        connection
+            .prepare(
+                `
 		delete from ${tableName} where id = ${id}
 		`
-        ).run()
+            )
+            .run()
     } catch (e) {
         log.debug(`delete from ${tableName} failed`, e.message)
         return Promise.reject(e)
@@ -383,7 +391,7 @@ export function insertEntry(tableName, info) {
         values.push(preparedValue)
     }
     try {
-        const row = db
+        const row = connection
             .prepare(
                 `
 		insert into ${tableName} (${columns.join()},createdAt,updatedAt)
@@ -404,7 +412,7 @@ export const insertOrder = (info) => insertEntry('orders', info)
 export const insertOrderItem = (info) => insertEntry('orderItems', info)
 
 export function insertEntries(tableName, infoList) {
-    const insertMany = db.transaction(() => {
+    const insertMany = connection.transaction(() => {
         for (let n = 0; n < infoList.length; n += 1) {
             const info = infoList[n]
             insertEntry(tableName, info)
@@ -422,7 +430,7 @@ export function insertEntries(tableName, infoList) {
 export const insertProducts = (infoList) => insertEntries('products', infoList)
 
 export async function createOrder({orderInfo, orderItemsInfo}) {
-    const createFn = db.transaction(() => {
+    const createFn = connection.transaction(() => {
         insertEntry('orders', orderInfo)
 
         orderInfo.orderItemIds = []
@@ -443,13 +451,18 @@ export async function createOrder({orderInfo, orderItemsInfo}) {
     }
 }
 
-export function sqlite_dump(sqliteFilePath, dumpPath) {
-    const dumpDir = path.dirname(dumpPath)
-    if (!existsSync(dumpDir)) {
-        mkdirSync(dumpDir, {recursive: true})
-    }
+export function sqlite_dump() {
+    const dumpPath = getSqliteDumpPath()
+    const sqliteFilePath = getSqliteFilePath()
+    const now = new Date()
+    const timeStamp = date.format(now, 'YYYY-MM-DD-HH-mm-ss')
+    const fileName = `${path.basename(
+        sqliteFilePath,
+        '.sqlite'
+    )}.dump.${timeStamp}.sql`
+    const dumpFilePath = path.resolve(dumpPath, fileName)
     execSync(
-        `sqlite3 ${sqliteFilePath} .dump | ForEach-Object {$_.replace("CREATE TABLE","CREATE TABLE IF NOT EXISTS")} > ${dumpPath}`,
+        `sqlite3 ${sqliteFilePath} .dump | ForEach-Object {$_.replace("CREATE TABLE","CREATE TABLE IF NOT EXISTS")} > ${dumpFilePath}`,
         {
             shell: 'pwsh',
         }
@@ -457,19 +470,16 @@ export function sqlite_dump(sqliteFilePath, dumpPath) {
 }
 
 export function sqlite_reset() {
-    try {
-        sqlite_close()
-    } catch (e) {
-        log.error(e.message)
-    }
-    const {sqliteFilePath, schemaPath} = sqlite_getOrCreatePath()
+    sqlite_disconnect()
+    const sqliteFilePath = getSqliteFilePath()
+    const schemaPath = getSqliteSchemaPath()
 
     if (existsSync(sqliteFilePath)) {
         unlinkSync(sqliteFilePath)
     }
 
     execSync(`sqlite3 ${sqliteFilePath} ".read '${schemaPath}'" ".exit"`)
-    sqlite_connect()
+    sqlite_connect(sqliteFilePath)
 }
 
 export function sqlite_readDump(dumpPath) {
@@ -478,6 +488,21 @@ export function sqlite_readDump(dumpPath) {
         `sqlite3 ${sqliteFilePath} ".read '${dumpPath}'" ".exit"`
     )
     log.info(buffer.toString())
+    log.debug('dump finished')
+}
+
+export function sqlite_backup() {
+    const sqliteFilePath = getSqliteFilePath()
+    const sqliteBackupPath = getSqliteBackupPath()
+    const now = new Date()
+    const timeStamp = date.format(now, 'YYYY-MM-DD-HH-mm-ss')
+    const fileName = `${path.basename(
+        sqliteFilePath,
+        '.sqlite'
+    )}.backup.${timeStamp}.sqlite`
+    const backupFilePath = path.resolve(sqliteBackupPath, fileName)
+    execSync(`sqlite3 ${sqliteFilePath} ".backup '${backupFilePath}'" ".exit"`)
+    return {result: true, path: backupFilePath}
 }
 
 export function sqlite_createLoadSchema(sqliteFilePath, schemaPath) {

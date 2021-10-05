@@ -35,7 +35,14 @@ logging.basicConfig(
     format="[python] [%(levelname)s] (%(filename)s) %(funcName)s(%(lineno)d): %(message)s",
 )
 
-from serverAction import orderExcelReport_openpyxl, loadConfig, setOutputPath
+from serverAction import (
+    orderExcelReport_openpyxl,
+    loadConfig,
+    setOutputPath as config_setOutputPath,
+    setTemplatePath as config_setTemplatePath,
+    setSqlitePath as config_setSqlitePath,
+    sqliteDisconnect as config_sqliteDisconnect,
+)
 
 
 class JsPythonServer(jsPython_pb2_grpc.CommunicationServicer):
@@ -58,7 +65,19 @@ class JsPythonServer(jsPython_pb2_grpc.CommunicationServicer):
         return empty
 
     async def setOutputPath(self, request, context):
-        setOutputPath(request.path)
+        config_setOutputPath(request.path)
+        return empty
+
+    async def setSqlitePath(self, request, context):
+        config_setSqlitePath(request.path)
+        return empty
+
+    async def setTemplatePath(self, request, context):
+        config_setTemplatePath(request.path)
+        return empty
+
+    async def sqliteDisconnect(self, request, context):
+        config_sqliteDisconnect()
         return empty
 
 

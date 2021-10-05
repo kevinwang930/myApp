@@ -29,6 +29,9 @@ service Communication {
   rpc supplierPdfReport(supplierReportRequest) returns (resultWithMessage) {}
   rpc reloadConfig(google.protobuf.Empty) returns (google.protobuf.Empty)  {}
   rpc setOutputPath(setPathRequest) returns (google.protobuf.Empty) {}
+  rpc setSqlitePath(setPathRequest) returns (google.protobuf.Empty) {}
+  rpc setTemplatePath(setPathRequest) returns (google.protobuf.Empty) {}
+  rpc sqliteDisconnect(google.protobuf.Empty) returns (google.protobuf.Empty) {}
 }
 
 // The request message containing the user's name.

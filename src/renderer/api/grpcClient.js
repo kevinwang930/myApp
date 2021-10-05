@@ -56,3 +56,14 @@ export function reloadConfig() {
 export function setOutputPath(pathString) {
     client.setOutputPath({path: pathString}, () => {})
 }
+
+export function setSqlitePath(pathString) {
+    client.setSqlitePath({path: pathString}, () => {})
+}
+export function setTemplatePath(pathString) {
+    client.setTemplatePath({path: pathString}, () => {})
+}
+
+export function sqliteDisconnect() {
+    client.sqliteDisconnect({}, () => {})
+}

@@ -2,36 +2,50 @@ import json
 import os
 import sys
 import logging
+import time
 
 config = None
 
+LOAD_COUNT = 0
+
 
 def loadConfig():
-    global config
+    global config, LOAD_COUNT
     config_file_path = os.getenv("CONFIG_FILEPATH")
     if os.path.isfile(config_file_path):
+        if LOAD_COUNT != 0:
+            time.sleep(1)
         with open(config_file_path, "r") as f:
             config = json.load(f)
-            logging.debug("config reloaded")
+            logging.debug("config loaded")
+            LOAD_COUNT += 1
     else:
         sys.exit("配置文件不存在")
 
 
-def getSqlitePath():
-    sqlitePath = config["sqlite.filePath"]
-    if os.path.isfile(sqlitePath):
-        return sqlitePath
-    logging.error(f"无法确定sqlite路径 {sqlitePath}")
+def getSqliteFilePath():
+    sqlitePath = config["sqlitePath"]
+    fileRelativePath = config["sqlite.relative.filePath"]
+    filePath = os.path.join(sqlitePath, fileRelativePath)
+    if os.path.isfile(filePath):
+        return filePath
+    logging.error(f"sqlite存储文件不存在 {filePath}")
     return False
 
 
 def getOrderExcelTemplatePath():
-    templatePath = config["template.excelOrderPath"]
-    if os.path.isfile(templatePath):
-        return templatePath
-    templatePath = config["app.template.excelOrderPath"]
-    if os.path.isfile(templatePath):
-        return templatePath
+    templatePath = config["templatePath"]
+    relativeTemplateExcelOrderPath = config["template.relative.excelOrderPath"]
+    templateExcelOrderPath = os.path.join(templatePath, relativeTemplateExcelOrderPath)
+    if os.path.isfile(templateExcelOrderPath):
+        return templateExcelOrderPath
+    appTemplatePath = config["app.templatePath"]
+    templateExcelOrderPath = os.path.join(
+        appTemplatePath, relativeTemplateExcelOrderPath
+    )
+    if os.path.isfile(templateExcelOrderPath):
+        return templateExcelOrderPath
+    logging.error(f"订单excel模板文件不存在 {templateExcelOrderPath}")
     return False
 
 
@@ -53,3 +67,13 @@ loadConfig()
 def setOutputPath(pathString):
     config["outputPath"] = pathString
     logging.debug(f"output path set to {pathString}")
+
+
+def setSqlitePath(pathString):
+    config["sqlitePath"] = pathString
+    logging.debug(f"sqlite path set to {pathString}")
+
+
+def setTemplatePath(pathString):
+    config["templatePath"] = pathString
+    logging.debug(f"template path set to {pathString}")

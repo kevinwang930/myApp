@@ -41,6 +41,16 @@ class CommunicationStub(object):
                 request_serializer=jsPython__pb2.setPathRequest.SerializeToString,
                 response_deserializer=google_dot_protobuf_dot_empty__pb2.Empty.FromString,
                 )
+        self.setSqlitePath = channel.unary_unary(
+                '/jsPython.Communication/setSqlitePath',
+                request_serializer=jsPython__pb2.setPathRequest.SerializeToString,
+                response_deserializer=google_dot_protobuf_dot_empty__pb2.Empty.FromString,
+                )
+        self.setTemplatePath = channel.unary_unary(
+                '/jsPython.Communication/setTemplatePath',
+                request_serializer=jsPython__pb2.setPathRequest.SerializeToString,
+                response_deserializer=google_dot_protobuf_dot_empty__pb2.Empty.FromString,
+                )
 
 
 class CommunicationServicer(object):
@@ -78,6 +88,18 @@ class CommunicationServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def setSqlitePath(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def setTemplatePath(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_CommunicationServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -103,6 +125,16 @@ def add_CommunicationServicer_to_server(servicer, server):
             ),
             'setOutputPath': grpc.unary_unary_rpc_method_handler(
                     servicer.setOutputPath,
+                    request_deserializer=jsPython__pb2.setPathRequest.FromString,
+                    response_serializer=google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
+            ),
+            'setSqlitePath': grpc.unary_unary_rpc_method_handler(
+                    servicer.setSqlitePath,
+                    request_deserializer=jsPython__pb2.setPathRequest.FromString,
+                    response_serializer=google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
+            ),
+            'setTemplatePath': grpc.unary_unary_rpc_method_handler(
+                    servicer.setTemplatePath,
                     request_deserializer=jsPython__pb2.setPathRequest.FromString,
                     response_serializer=google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
             ),
@@ -197,6 +229,40 @@ class Communication(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/jsPython.Communication/setOutputPath',
+            jsPython__pb2.setPathRequest.SerializeToString,
+            google_dot_protobuf_dot_empty__pb2.Empty.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def setSqlitePath(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/jsPython.Communication/setSqlitePath',
+            jsPython__pb2.setPathRequest.SerializeToString,
+            google_dot_protobuf_dot_empty__pb2.Empty.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def setTemplatePath(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/jsPython.Communication/setTemplatePath',
             jsPython__pb2.setPathRequest.SerializeToString,
             google_dot_protobuf_dot_empty__pb2.Empty.FromString,
             options, channel_credentials,

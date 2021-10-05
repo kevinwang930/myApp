@@ -160,7 +160,7 @@ ipcMain.handle('chooseSavePath', async (event, defaultPath) => {
     return saveResult
 })
 
-ipcMain.handle('chooseOpenPath', async (event, defaultPath) => {
+ipcMain.handle('choose-open-path', async (event, defaultPath) => {
     const openResult = await dialog.showOpenDialog({
         defaultPath,
         properties: ['openFile'],

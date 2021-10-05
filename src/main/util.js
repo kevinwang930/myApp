@@ -6,7 +6,7 @@ const {app, ipcMain} = require('electron')
 const fs = require('fs')
 const {mainLog, pythonLog} = require('./log')
 const {srcPath} = require('../../.erb/configs/webpack.paths')
-const {store, config_filePath} = require('./setting')
+const {store, config_filePath, getSqliteFilePath} = require('./setting')
 
 // database related
 
@@ -65,12 +65,11 @@ function startPythonServiceSrc() {
 }
 
 function startPythonService() {
-    const sqliteFilePath = store.get('sqlite.filePath', null)
+    const sqliteFilePath = getSqliteFilePath()
     if (!sqliteFilePath || !fs.existsSync(sqliteFilePath)) {
         mainLog.warn(
-            `sqlite file ${sqliteFilePath} doesn't exist, quite python service`
+            `python service started, sqlite file ${sqliteFilePath} doesn't exist, `
         )
-        return
     }
 
     if (app.isPackaged) {
@@ -92,7 +91,10 @@ function resolveHtmlPath(htmlFileName) {
 }
 
 async function restartPythonService() {
-    await pythonService.kill()
+    if (pythonService) {
+        await pythonService.kill()
+        pythonService = null
+    }
     startPythonService()
 }
 
@@ -102,6 +104,13 @@ ipcMain.handle('start-pythonService', () => {
 
 ipcMain.handle('restart-pythonService', () => {
     restartPythonService()
+})
+
+ipcMain.handle('stop-python-service', async () => {
+    if (pythonService) {
+        await pythonService.kill()
+        pythonService = null
+    }
 })
 
 module.exports = {

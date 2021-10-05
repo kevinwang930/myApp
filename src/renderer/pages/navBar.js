@@ -6,7 +6,6 @@ import {
     ProfileOutlined,
     TeamOutlined,
     MenuOutlined,
-    DatabaseOutlined,
     BugOutlined,
     SettingOutlined,
 } from '@ant-design/icons'
@@ -75,16 +74,12 @@ export function NavBar() {
                 修改
             </NavSubMenu>
         </Menu.Item> */}
-            {/* <Menu.Item key="data" icon={<ProfileOutlined />}>
-                <NavLink to="/data">
-                    <span>数据分析</span>
-                </NavLink>
-            </Menu.Item> */}
-            <Menu.Item key="database" icon={<DatabaseOutlined />}>
+
+            {/* <Menu.Item key="database" icon={<DatabaseOutlined />}>
                 <NavLink to="/database">
                     <span>数据库</span>
                 </NavLink>
-            </Menu.Item>
+            </Menu.Item> */}
             <Menu.Item key="setting" icon={<SettingOutlined />}>
                 <NavLink to="/setting">
                     <span>设置</span>

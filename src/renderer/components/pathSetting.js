@@ -42,9 +42,11 @@ export function PathSetting({description, initPathString, onPathSave}) {
     }
 
     return (
-        <SettingBox description={description}>
-            <Input onChange={onChange} ref={inputRef} />
-            <Button onClick={onSave}>保存</Button>
-        </SettingBox>
+        <Input
+            addonBefore={description}
+            addonAfter={<Button onClick={onSave}>保存</Button>}
+            onChange={onChange}
+            ref={inputRef}
+        />
     )
 }

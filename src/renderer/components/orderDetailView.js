@@ -329,7 +329,7 @@ export const OrderDetailView = () => {
                         })
                     } else {
                         message.error({
-                            content: err.message,
+                            content: response.message,
                             key: 'orderExport',
                         })
                     }

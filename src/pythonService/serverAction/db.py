@@ -2,7 +2,7 @@ import sqlite3
 from pathlib import Path
 import logging
 import os
-from .setting import getSqlitePath
+from .setting import getSqliteFilePath
 
 sqlitePath = None
 connection = None
@@ -10,23 +10,30 @@ connection = None
 
 def sqliteConnect():
     global connection, sqlitePath
-    currentSqlitePath = getSqlitePath()
-    if not currentSqlitePath:
+    currentSqliteFilePath = getSqliteFilePath()
+    if not currentSqliteFilePath:
         return False
     if connection:
-        if currentSqlitePath == sqlitePath:
+        if currentSqliteFilePath == sqlitePath:
             return True
         else:
             connection.close()
-            sqlitePath = currentSqlitePath
+            sqlitePath = currentSqliteFilePath
             connection = sqlite3.connect(sqlitePath)
             connection.row_factory = sqlite3.Row
             return True
     else:
-        sqlitePath = currentSqlitePath
+        sqlitePath = currentSqliteFilePath
         connection = sqlite3.connect(sqlitePath)
         connection.row_factory = sqlite3.Row
         return True
+
+
+def sqliteDisconnect():
+    global connection
+    if connection:
+        connection.close()
+    logging.debug("python sqlite disconnected")
 
 
 class Order:

@@ -40,7 +40,7 @@ async function updateToNextVersion() {
     } else {
         release = 'patch'
     }
-    execSync(`npm version ${release}`)
+    execSync(`npm --no-git-tag-version version ${release}`)
     const targetVersion = semver.inc(currentVersion, release)
     await git
         .add('.')

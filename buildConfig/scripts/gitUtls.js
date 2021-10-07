@@ -74,6 +74,7 @@ async function gitEnsureTagExists() {
         }
         if (latestTagVersion === currentVersion) {
             const targetVersion = await updateToNextVersion()
+            console.log(`target publish version ${targetVersion}`)
             await createTagFromVersion(targetVersion)
         }
     }

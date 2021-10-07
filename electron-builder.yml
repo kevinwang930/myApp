@@ -67,5 +67,5 @@ publish:
     repo: "myApp"
 
 nsis:
-    artifactName: ${productName}.setup.${version}.${platform}.${arch}.${ext}
+    artifactName: ${productName}.setup.${env.npm_package_version}.${platform}.${arch}.${ext}
 

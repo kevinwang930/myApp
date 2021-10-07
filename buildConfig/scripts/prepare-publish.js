@@ -1,4 +1,4 @@
-import {checkGitStatus, gitEnsureTagExists} from './gitUtls.mjs'
+const {checkGitStatus, gitEnsureTagExists} = require('./gitUtls.js')
 
 async function preparePublish() {
     await checkGitStatus()

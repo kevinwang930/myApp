@@ -5,7 +5,7 @@ const {spawn} = require('child_process')
 const {app, ipcMain} = require('electron')
 const fs = require('fs')
 const {mainLog, pythonLog} = require('./log')
-const {srcPath} = require('../../.erb/configs/webpack.paths')
+const {srcPath} = require('../../buildConfig/configs/webpack.paths')
 const {store, config_filePath, getSqliteFilePath} = require('./setting')
 
 // database related

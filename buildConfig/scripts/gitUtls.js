@@ -1,11 +1,11 @@
-import chalk from 'chalk'
-import simpleGit from 'simple-git'
-import semver from 'semver'
-import {execSync} from 'child_process'
+const chalk = require('chalk')
+const simpleGit = require('simple-git')
+const semver = require('semver')
+const {execSync} = require('child_process')
 
 const git = simpleGit()
 
-export async function checkGitStatus() {
+async function checkGitStatus() {
     const gitStatus = await git.status()
     if (gitStatus.files.length) {
         console.log(
@@ -56,7 +56,7 @@ async function createTagFromVersion(version) {
     console.log(`git tag ${tagToBePushed} created and pushed to remote`)
 }
 
-export async function gitEnsureTagExists() {
+async function gitEnsureTagExists() {
     const currentVersion = process.env.npm_package_version
     const tagList = await git.tags()
     if (!tagList.latest) {
@@ -77,4 +77,9 @@ export async function gitEnsureTagExists() {
             await createTagFromVersion(targetVersion)
         }
     }
+}
+
+module.exports = {
+    checkGitStatus,
+    gitEnsureTagExists,
 }

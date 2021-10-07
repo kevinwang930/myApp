@@ -20,6 +20,7 @@ import {NavBar} from './pages/navBar'
 import {Setting} from './pages/setting'
 // import {  initStore } from './app/store'
 import './App.global.css'
+// import 'tailwindcss/tailwind.css'
 
 export default function App() {
     // useEffect(async ()=>{

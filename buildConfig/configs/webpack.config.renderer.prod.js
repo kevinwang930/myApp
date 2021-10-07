@@ -89,20 +89,24 @@ module.exports = merge(baseConfig, {
                 test: /\.global\.css$/,
                 use: ['style-loader', 'css-loader', 'postcss-loader'],
             },
+            // {
+            //     // CSS/SCSS
+            //     test: /\.s?css$/,
+            //     use: [
+            //         {
+            //             loader: MiniCssExtractPlugin.loader,
+            //             options: {
+            //                 // `./dist` can't be inerhited for publicPath for styles. Otherwise generated paths will be ./dist/dist
+            //                 publicPath: './',
+            //             },
+            //         },
+            //         'css-loader',
+            //         'sass-loader',
+            //     ],
+            // },
             {
-                // CSS/SCSS
-                test: /\.s?css$/,
-                use: [
-                    {
-                        loader: MiniCssExtractPlugin.loader,
-                        options: {
-                            // `./dist` can't be inerhited for publicPath for styles. Otherwise generated paths will be ./dist/dist
-                            publicPath: './',
-                        },
-                    },
-                    'css-loader',
-                    'sass-loader',
-                ],
+                test: /(?<!global)\.css$/,
+                use: ['style-loader', 'css-loader'],
             },
             // WOFF Font
             {

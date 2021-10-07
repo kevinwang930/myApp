@@ -3,10 +3,10 @@
  */
 
 // const externals = require('../../release/app/package.json').dependencies
-
+const webpackPaths = require('./webpack.paths')
 module.exports = {
     // externals: [...Object.keys(externals || {})],
-
+    context: webpackPaths.rootPath,
     stats: {
         cachedAssets: true,
         // builtAt:false,

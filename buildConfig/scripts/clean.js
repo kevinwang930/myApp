@@ -14,7 +14,7 @@ function cleanDist() {
         recursive: true,
         force: true,
     })
-    console.log(`${webpackPaths.buildPath} cleaned`)
+    console.log(`${webpackPaths.distPath} cleaned`)
 }
 
 module.exports = {

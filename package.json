@@ -1,7 +1,7 @@
 {
   "name": "my-app",
   "productName": "my-app",
-  "version": "1.0.1",
+  "version": "1.0.0",
   "scripts": {
     "build": "node ./buildConfig/scripts/prepare-build.js && concurrently npm:build:main npm:build:renderer npm:build:pythonService",
     "build:main": "cross-env NODE_ENV=production webpack --config ./buildConfig/configs/webpack.config.main.prod.js",
@@ -10,7 +10,7 @@
     "rebuild": "electron-rebuild --parallel --types prod,dev,optional",
     "package": "npm run build && electron-builder build --publish never",
     "publish": "npm run build && electron-builder build  --win --x64  --publish always",
-    "prepublish": "node ./buildConfig/scripts/prepare-publish.js",
+    "publish:prepare": "node ./buildConfig/scripts/prepare-publish.js",
     "postinstall": "electron-rebuild && electron-builder install-app-deps",
     "start": "conda activate electron && node ./buildConfig/scripts/check-port-in-use.js && npm run start:renderer",
     "start:main:debug": "cross-env NODE_ENV=development electron  ./src/main/main.js --remote-debugging-port=9222",

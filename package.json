@@ -9,7 +9,7 @@
     "build:pythonService": "conda activate electron && pyinstaller -D -y -n pythonService --distpath pythonBuild/dist --workpath pythonBuild --specpath pythonBuild src/pythonService/async_server.py  ",
     "rebuild": "electron-rebuild --parallel --types prod,dev,optional",
     "package": "node ./.erb/scripts/clean.js build && npm run build && electron-builder build --publish never",
-    "publish": "node ./.erb/scripts/prepare-publish.mjs && node ./.erb/scripts/clean.js build && npm run build && electron-builder build  --win --x64  --publish onTagOrDraft",
+    "publish": "node ./.erb/scripts/prepare-publish.mjs && node ./.erb/scripts/clean.js build && npm run build && electron-builder build  --win --x64  --publish always",
     "postinstall": "electron-rebuild && electron-builder install-app-deps",
     "start": "conda activate electron && node ./.erb/scripts/check-port-in-use.js && npm run start:renderer",
     "start:main:debug": "cross-env NODE_ENV=development electron  ./src/main/main.js --remote-debugging-port=9222",

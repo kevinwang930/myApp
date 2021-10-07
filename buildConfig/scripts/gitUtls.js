@@ -85,12 +85,16 @@ async function gitEnsureTagExists() {
 
 async function postVersion() {
     const currentVersion = process.env.npm_package_version
-    const currentTag = await git.tags().latest
-    await git
-        .add('.')
-        .commit(`bump version to ${currentVersion}`)
-        .push('origin', 'main')
-    await git.push('origin', 'main', [currentTag])
+    const tagList = await git.tags()
+    if (tagList.latest) {
+        await git
+            .add('.')
+            .commit(`bump version to ${currentVersion}`)
+            .push('origin', 'main')
+        await git.push('origin', 'main', [tagList.latest])
+    } else {
+        console.log(chalk.whiteBright.bgRed.bold('can not find the latest tag'))
+    }
 }
 
 module.exports = {

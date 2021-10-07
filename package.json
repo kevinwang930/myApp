@@ -1,15 +1,15 @@
 {
   "name": "my-app",
   "productName": "my-app",
-  "description": "Electron application boilerplate based on React, React Router, Webpack, React Fast Refresh for rapid application development",
+  "version": "1.0.0",
   "scripts": {
     "build": "node ./.erb/scripts/clean.js dist && concurrently npm:build:main npm:build:renderer npm:build:pythonService",
     "build:main": "cross-env NODE_ENV=production webpack --config ./.erb/configs/webpack.config.main.prod.js",
     "build:renderer": "cross-env NODE_ENV=production webpack --config ./.erb/configs/webpack.config.renderer.prod.js",
     "build:pythonService": "conda activate electron && pyinstaller -D -y -n pythonService --distpath pythonBuild/dist --workpath pythonBuild --specpath pythonBuild src/pythonService/async_server.py  ",
     "rebuild": "electron-rebuild --parallel --types prod,dev,optional",
-    "lint": "cross-env NODE_ENV=development eslint . --cache --ext .js,.jsx,.ts,.tsx",
     "package": "node ./.erb/scripts/clean.js build && npm run build && electron-builder build --publish never",
+    "publish": "node ./.erb/scripts/prepare-publish.mjs && node ./.erb/scripts/clean.js build && npm run build && electron-builder build  --win --x64  --publish never",
     "postinstall": "electron-rebuild && electron-builder install-app-deps",
     "start": "conda activate electron && node ./.erb/scripts/check-port-in-use.js && npm run start:renderer",
     "start:main:debug": "cross-env NODE_ENV=development electron  ./src/main/main.js --remote-debugging-port=9222",
@@ -21,104 +21,12 @@
     "tailwind-build": "postcss src/renderer/app.global.css -o release/app/dist/index_postcss.css",
     "tailwind-build-watch": "postcss src/index.css -o dist/index_postcss.css --watch"
   },
-  "build": {
-    "productName": "myApp",
-    "appId": "com.electron.app",
-    "asar": true,
-    "asarUnpack": "**\\*.{node,dll}",
-    "files": [
-      "dist",
-      "node_modules",
-      "package.json"
-    ],
-    "afterSign": ".erb/scripts/notarize.js",
-    "mac": {
-      "type": "distribution",
-      "hardenedRuntime": true,
-      "entitlements": "assets/entitlements.mac.plist",
-      "entitlementsInherit": "assets/entitlements.mac.plist",
-      "gatekeeperAssess": false
-    },
-    "dmg": {
-      "contents": [
-        {
-          "x": 130,
-          "y": 220
-        },
-        {
-          "x": 410,
-          "y": 220,
-          "type": "link",
-          "path": "/Applications"
-        }
-      ]
-    },
-    "win": {
-      "target": [
-        "nsis"
-      ]
-    },
-    "linux": {
-      "target": [
-        "AppImage"
-      ],
-      "category": "Development"
-    },
-    "directories": {
-      "app": "release/app",
-      "buildResources": "assets",
-      "output": "release/build"
-    },
-    "extraResources": [
-      "./assets/**"
-    ],
-    "extraFiles": [
-      {
-        "from": "pythonBuild/dist/pythonService",
-        "to": "pythonService"
-      },
-      {
-        "from": "db",
-        "to": "db",
-        "filter": [
-          "!**/srcStorage${/*}"
-        ]
-      },
-      {
-        "from": "public",
-        "to": "public"
-      }
-    ],
-    "publish": {
-      "provider": "github",
-      "owner": "kevinwang930",
-      "repo": "electron-react-boilerplate"
-    }
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/kevinwang930/mytemplate.git"
-  },
   "author": {
-    "name": "Electron React Boilerplate",
+    "name": "Kevin Wang",
     "email": "kevinwang930@hotmail.com"
   },
   "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/kevinwang930/mytemplate/issues"
-  },
-  "keywords": [
-    "electron",
-    "boilerplate",
-    "react",
-    "typescript",
-    "ts",
-    "sass",
-    "webpack",
-    "hot",
-    "reload"
-  ],
-  "homepage": "https://github.com/kevinwang930/mytemplate#readme",
+  "homepage": "https://github.com/kevinwang930/myApp#readme",
   "jest": {
     "testURL": "http://localhost/",
     "testEnvironment": "jsdom",
@@ -195,6 +103,7 @@
     "rimraf": "^3.0.2",
     "sass": "^1.42.1",
     "sass-loader": "^12.1.0",
+    "simple-git": "^2.46.0",
     "style-loader": "^3.3.0",
     "tailwindcss": "^2.2.16",
     "terser-webpack-plugin": "^5.2.4",
@@ -232,6 +141,5 @@
   "devEngines": {
     "node": ">=14.x",
     "npm": ">=7.x"
-  },
-  "browserslist": []
+  }
 }

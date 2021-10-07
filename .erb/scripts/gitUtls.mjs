@@ -52,7 +52,7 @@ async function updateToNextVersion() {
 async function createTagFromVersion(version) {
     const tagToBePushed = `v${version}`
     await git.addAnnotatedTag(tagToBePushed, `version ${version}`)
-    await git.push('origin', 'main', tagToBePushed)
+    await git.push('origin', 'main', [tagToBePushed])
     console.log(`git tag ${tagToBePushed} created and pushed to remote`)
 }
 

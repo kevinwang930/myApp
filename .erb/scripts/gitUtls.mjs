@@ -23,6 +23,7 @@ export async function checkGitStatus() {
         )
         process.exit(2)
     }
+    console.log('git check status finished')
 }
 
 async function updateToNextVersion() {
@@ -52,6 +53,7 @@ async function createTagFromVersion(version) {
     const tagToBePushed = `v${version}`
     await git.addAnnotatedTag(tagToBePushed, `version ${version}`)
     await git.push('origin', 'main', tagToBePushed)
+    console.log(`git tag ${tagToBePushed} created and pushed to remote`)
 }
 
 export async function gitEnsureTagExists() {

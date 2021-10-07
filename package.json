@@ -16,6 +16,7 @@
     "start:main": "cross-env NODE_ENV=development electron  ./src/main/main.js",
     "start:renderer": "cross-env NODE_ENV=development webpack serve --config ./.erb/configs/webpack.config.renderer.dev.js",
     "test": "jest",
+    "publish:test":"node ./.erb/scripts/prepare-publish.mjs",
     "archive": "git archive --format=zip --output=archive/latest.zip main",
     "git": "node .erb/scripts/check-git-status.js",
     "tailwind-build": "postcss src/renderer/app.global.css -o release/app/dist/index_postcss.css",

@@ -1,4 +1,4 @@
-import {checkGitStatus, gitEnsureTagExists} from './git.mjs'
+import {checkGitStatus, gitEnsureTagExists} from './gitUtls.mjs'
 
 async function preparePublish() {
     await checkGitStatus()

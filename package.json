@@ -2,6 +2,7 @@
   "name": "my-app",
   "version": "1.0.1",
   "homepage": "https://github.com/kevinwang930/myApp#readme",
+  "description": "electron react app for order management",
   "license": "MIT",
   "author": {
     "name": "Kevin Wang",
@@ -18,13 +19,11 @@
     "package": "npm run build && electron-builder build --publish never",
     "publish": "node ./buildConfig/scripts/prepare-publish.js && npm run build && electron-builder build  --win --x64  --publish always",
     "publish:test": "node ./buildConfig/scripts/prepare-publish.js",
-    "rebuild": "electron-rebuild --parallel --types prod,dev,optional",
     "start": "conda activate electron && node ./buildConfig/scripts/check-port-in-use.js && npm run start:renderer",
     "start:main": "cross-env NODE_ENV=development electron  ./src/main/main.js",
     "start:main:debug": "cross-env NODE_ENV=development electron  ./src/main/main.js --remote-debugging-port=9222",
     "start:renderer": "cross-env NODE_ENV=development webpack serve --config ./buildConfig/configs/webpack.config.renderer.dev.js",
-    "test": "jest",
-    "postversion": "node ./buildConfig/scripts/post-version.js"
+    "test": "jest"
   },
   "jest": {
     "moduleDirectories": [

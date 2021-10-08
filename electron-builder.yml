@@ -65,7 +65,9 @@ publish:
     provider: "github"
     owner: "kevinwang930"
     repo: "myApp"
+    vPrefixedTagName: true
+    releaseType: "draft"
 
 nsis:
-    artifactName: ${productName}.setup.${env.npm_package_version}.${platform}.${arch}.${ext}
+    artifactName: ${productName}.setup.${buildVersion}.${platform}.${arch}.${ext}
 

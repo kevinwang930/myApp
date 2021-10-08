@@ -1,8 +1,8 @@
-const {checkGitStatus} = require('./gitUtls')
+const {checkGitStatus, gitEnsureTagExists} = require('./gitUtls')
 
 async function preparePublish() {
     await checkGitStatus()
-    // await gitEnsureTagExists()
+    await gitEnsureTagExists()
 }
 
 preparePublish()

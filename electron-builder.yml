@@ -4,9 +4,7 @@ appId: "com.electron.myapp"
 asar: true
 asarUnpack: "**\\*.{node,dll}"
 files:
-    - "dist"
-    - "node_modules"
-    - "package.json"
+    - "./release/app/dist/**/*"
 
 # afterSign: ".erb/scripts/notarize.js",
 # "mac": {
@@ -40,7 +38,7 @@ win:
 #       "category": "Development"
 #     },
 directories:
-    app: "release/app"
+    # app: "release/app"
     buildResources: "assets"
     output: "release/build"
 extraResources:

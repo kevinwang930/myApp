@@ -2,6 +2,7 @@
   "name": "my-app",
   "productName": "my-app",
   "version": "1.0.0",
+  "main": "./release/app/dist/main/main.js",
   "scripts": {
     "build": "node ./buildConfig/scripts/prepare-build.js && concurrently npm:build:main npm:build:renderer npm:build:pythonService",
     "build:main": "cross-env NODE_ENV=production webpack --config ./buildConfig/configs/webpack.config.main.prod.js",
@@ -135,9 +136,7 @@
     "redux": "^4.1.1"
   },
   "dependencies": {
-
     "better-sqlite3": "^7.4.3"
-
   },
   "devEngines": {
     "node": ">=14.x",

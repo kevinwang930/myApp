@@ -87,26 +87,15 @@ module.exports = merge(baseConfig, {
             },
             {
                 test: /\.global\.css$/,
-                use: ['style-loader', 'css-loader', 'postcss-loader'],
+                use: [
+                    MiniCssExtractPlugin.loader,
+                    'css-loader',
+                    'postcss-loader',
+                ],
             },
-            // {
-            //     // CSS/SCSS
-            //     test: /\.s?css$/,
-            //     use: [
-            //         {
-            //             loader: MiniCssExtractPlugin.loader,
-            //             options: {
-            //                 // `./dist` can't be inerhited for publicPath for styles. Otherwise generated paths will be ./dist/dist
-            //                 publicPath: './',
-            //             },
-            //         },
-            //         'css-loader',
-            //         'sass-loader',
-            //     ],
-            // },
             {
                 test: /(?<!global)\.css$/,
-                use: ['style-loader', 'css-loader'],
+                use: [MiniCssExtractPlugin.loader, 'css-loader'],
             },
             // WOFF Font
             {
@@ -196,13 +185,10 @@ module.exports = merge(baseConfig, {
          * NODE_ENV should be production so that modules do not perform certain
          * development checks
          */
+        new MiniCssExtractPlugin(),
         new webpack.EnvironmentPlugin({
             NODE_ENV: 'production',
             DEBUG_PROD: false,
-        }),
-
-        new MiniCssExtractPlugin({
-            filename: 'style.css',
         }),
 
         new BundleAnalyzerPlugin({

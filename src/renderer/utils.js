@@ -10,9 +10,9 @@ import path from 'path'
 // import {getSqliteFilePath} from '../bridges/settings'
 // import {log} from './log'
 
-export async function checkFileWritable(path) {
+export async function checkFileWritable(filePath) {
     try {
-        await access(path, constants.W_OK)
+        await access(filePath, constants.W_OK)
     } catch (e) {
         if (e.code === 'ENOENT') {
             return true
@@ -20,7 +20,7 @@ export async function checkFileWritable(path) {
         return Promise.reject(e)
     }
 
-    const fileHandler = await open(path, 'r+')
+    const fileHandler = await open(filePath, 'r+')
     await fileHandler.close()
     return true
 }

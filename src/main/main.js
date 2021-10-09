@@ -10,13 +10,12 @@
 // require('core-js/stable');
 // require('regenerator-runtime/runtime');
 const path = require('path')
-const {app, BrowserWindow, shell, ipcMain, dialog} = require('electron')
+const {app, BrowserWindow, shell} = require('electron')
 const {autoUpdater} = require('electron-updater')
-const fs = require('fs')
 const {store} = require('./setting')
 const {mainLog} = require('./log')
 const MenuBuilder = require('./menu')
-const {resolveHtmlPath, startPythonService} = require('./util')
+const {resolveHtmlPath, startPythonService} = require('./utils')
 
 startPythonService()
 
@@ -133,37 +132,4 @@ app.on('activate', () => {
     // On macOS it's common to re-create a window in the app when the
     // dock icon is clicked and there are no other windows open.
     if (mainWindow === null) createWindow()
-})
-
-ipcMain.handle('printPdf', async (event, outputPath) => {
-    try {
-        const data = await mainWindow.webContents.printToPDF({
-            landscape: false,
-            // printBackground:true,
-            // fitToPageEnabled:true,
-            // scaleFactor:56,
-            pageSize: 'A4',
-            marginsType: 0,
-        })
-        await fs.promises.writeFile(outputPath, data)
-        return {result: true, message: null}
-    } catch (e) {
-        return {result: false, message: e.message}
-    }
-})
-
-ipcMain.handle('chooseSavePath', async (event, defaultPath) => {
-    const saveResult = await dialog.showSaveDialog({
-        defaultPath,
-        properties: ['showOverwriteConfirmation', 'createDirectory'],
-    })
-    return saveResult
-})
-
-ipcMain.handle('choose-open-path', async (event, defaultPath) => {
-    const openResult = await dialog.showOpenDialog({
-        defaultPath,
-        properties: ['openFile'],
-    })
-    return openResult
 })

@@ -15,3 +15,7 @@ export function stopPythonService() {
 export async function chooseOpenPath(defaultPath) {
     return await ipcRenderer.invoke('choose-open-path', defaultPath)
 }
+
+export async function printPdf(fileName) {
+    return await ipcRenderer.invoke('printPdf', fileName)
+}

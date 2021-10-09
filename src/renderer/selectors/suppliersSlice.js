@@ -124,15 +124,4 @@ export const selectFilteredSuppliers = createSelector(
     }
 )
 
-export const selectSupplierByIdAllowNull = createSelector(
-    selectAllSuppliersDict,
-    (state, id) => id,
-    (suppliers, id) => {
-        if (!id) {
-            return null
-        }
-        return suppliers[id]
-    }
-)
-
 export default suppliersSlice.reducer

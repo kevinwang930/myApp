@@ -1,29 +1,21 @@
-import {Button, Col, Row, Select, message, Divider, Layout} from 'antd'
+import {Button, Select, message, Divider, notification} from 'antd'
 import {useSelector} from 'react-redux'
-import React, {
-    useState,
-    useRef,
-    useEffect,
-    useImperativeHandle,
-    forwardRef,
-} from 'react'
+import React, {useState, useEffect} from 'react'
 import {SupplierOrdersReport} from '../components/Report/supplierOrdersReport'
 import {SupplierOrderItemsReport} from '../components/Report/supplierOrderItemsReport'
 import {
     selectSupplierOptions,
-    selectSupplierByIdAllowNull,
+    selectSupplierById,
 } from '../selectors/suppliersSlice'
 import {selectOrdersBySupplierId} from '../selectors/ordersSlice'
 import {getSupplierOrderItemsSummary} from '../api/db'
-import {pdfReport as pdfOutputReport} from '../api/supplierPdfReport'
-
-const {Header, Content, Footer, Sider} = Layout
+import {printPdf} from '../../bridges/utils'
 
 export function SupplierAnalysis() {
     const supplierOptions = useSelector(selectSupplierOptions)
     const [supplierId, setSupplierId] = useState(null)
     const supplier = useSelector((state) =>
-        selectSupplierByIdAllowNull(state, supplierId)
+        selectSupplierById(state, supplierId)
     )
     const orders = useSelector((state) =>
         selectOrdersBySupplierId(state, supplierId)
@@ -47,8 +39,8 @@ export function SupplierAnalysis() {
         }
         if (changes.orders) {
             newReportInfo.orders = orders
-            const ordersAnalysis = (newReportInfo.ordersAnalysis =
-                getOrdersAnalysis())
+            const ordersAnalysis = getOrdersAnalysis()
+            newReportInfo.ordersAnalysis = ordersAnalysis
             try {
                 newReportInfo.orderItemsAnalysis = await getOrderItemsAnalysis(
                     ordersAnalysis.totalAmount
@@ -107,11 +99,11 @@ export function SupplierAnalysis() {
         }
     }
 
-    const onSupplierChange = (value, option) => {
+    const onSupplierChange = (value) => {
         setSupplierId(value)
     }
 
-    const pdfReport = async () => {
+    const pdfExport = async () => {
         if (!supplier) {
             message.error({
                 content: '请选择供应商',
@@ -123,38 +115,22 @@ export function SupplierAnalysis() {
                 key: 'supplierReport',
             })
         } else {
-            const reportName = `供应商报告${supplier.name}`
-            await pdfOutputReport.printPdf(reportName)
+            const exportName = `供应商报告-${supplier.name}.pdf`
+            const feedback = await printPdf(exportName)
+            if (feedback.result) {
+                notification.success({
+                    message: 'pdf 导出成功',
+                    description: feedback.path,
+                    key: 'pdfExport',
+                })
+            } else {
+                notification.error({
+                    message: 'pdf 导出失败',
+                    description: feedback.message,
+                    key: 'pdfExport',
+                })
+            }
         }
-
-        // let canvas = await html2canvas(reportElement)
-        // var img = canvas.toDataURL("image/jpeg", 1);
-        // var doc = new jsPDF('L', 'px');
-        // doc.addImage(img, 'JPEG', 0, 0);
-        // doc.save('output/sample-file.pdf');
-    }
-
-    const printReport = async () => {
-        if (!supplier) {
-            message.error({
-                content: '请选择供应商',
-                key: 'supplierReport',
-            })
-        } else if (!orders.length) {
-            message.error({
-                content: `${supplier.name}名下无订单`,
-                key: 'supplierReport',
-            })
-        } else {
-            const reportName = `供应商报告${supplier.name}`
-            await pdfOutputReport.print(reportName)
-        }
-
-        // let canvas = await html2canvas(reportElement)
-        // var img = canvas.toDataURL("image/jpeg", 1);
-        // var doc = new jsPDF('L', 'px');
-        // doc.addImage(img, 'JPEG', 0, 0);
-        // doc.save('output/sample-file.pdf');
     }
 
     return (
@@ -170,8 +146,7 @@ export function SupplierAnalysis() {
                     placeholder="选择供应商"
                     onChange={onSupplierChange}
                 />
-                <Button onClick={pdfReport}>导出PDF</Button>
-                <Button onClick={printReport}>打印</Button>
+                <Button onClick={pdfExport}>导出PDF</Button>
             </header>
 
             <SupplierReport reportInfo={reportInfo} />

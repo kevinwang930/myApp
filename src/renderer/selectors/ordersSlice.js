@@ -8,7 +8,6 @@ import {
     getOrders,
     updateOrderById as updateOrderById_db,
     deleteOrderById as deleteOrderById_db,
-    deleteOrderItemById as deleteOrderItemById_db,
 } from '../api/db'
 import {log} from '../log'
 
@@ -19,17 +18,17 @@ export const fetchOrders = createAsyncThunk('orders/fetchOrders', async () => {
 
 export const updateOrder = createAsyncThunk(
     'orders/updateOrder',
-    async ({id, changes}, thunkAPI) => {
+    async ({id, changes}) => {
         log.debug('changed values in slice', changes)
-        const response = await updateOrderById_db(id, changes)
+        await updateOrderById_db(id, changes)
 
-        return {id: id, changes: changes}
+        return {id, changes}
     }
 )
 
 export const deleteOrder = createAsyncThunk(
     'orders/deleteOrder',
-    async ({id}, thunkAPI) => {
+    async ({id}) => {
         try {
             await deleteOrderById_db(id)
             return id
@@ -59,7 +58,7 @@ const ordersSlice = createSlice({
             ordersAdapter.updateOne(state, action.payload)
         },
         addOrderStoreId(state) {
-            state.id = state.id + 1
+            state.id += 1
         },
         insertOrderRedux(state, action) {
             ordersAdapter.addOne(state, action.payload)
@@ -107,10 +106,9 @@ export const selectOrdersBySupplierId = createSelector(
     (state, supplierId) => supplierId,
     (orders, supplierId) => {
         if (supplierId) {
-            return orders.filter((order) => order.supplierId == supplierId)
-        } else {
-            return []
+            return orders.filter((order) => order.supplierId === supplierId)
         }
+        return []
     }
 )
 
@@ -120,8 +118,7 @@ export const selectOrderByIdAllowNull = createSelector(
     (id, Dict) => {
         if (id) {
             return Dict[id]
-        } else {
-            return null
         }
+        return null
     }
 )

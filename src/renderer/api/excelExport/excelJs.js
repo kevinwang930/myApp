@@ -1,8 +1,8 @@
 import {notification} from 'antd'
 // import Excel from 'exceljs'
 import {Workbook} from 'exceljs/excel'
-import open from 'open'
 import {checkFileWritable} from '../../utils'
+import {openPath} from '../../../bridges/utils'
 
 export async function orderExcelExportAction(
     orderData,
@@ -91,14 +91,7 @@ async function saveFile(workbook, orderNo, exportPath) {
             description: `订单导出目录 ${exportPath}`,
             key: 'orderExport',
         })
-        open(exportPath, (err) => {
-            if (err) {
-                notification.error({
-                    message: err,
-                    key: 'orderExport',
-                })
-            }
-        })
+        openPath(exportPath)
     } catch (e) {
         notification.error({
             message: e.code,

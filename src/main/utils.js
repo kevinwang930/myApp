@@ -181,6 +181,10 @@ ipcMain.handle('choose-open-path', async (event, defaultPath) => {
     return openResult
 })
 
+ipcMain.handle('open-path', (event, filePath) => {
+    shell.openPath(filePath)
+})
+
 module.exports = {
     resolveHtmlPath,
     startPythonService,

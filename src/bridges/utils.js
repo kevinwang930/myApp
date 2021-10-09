@@ -19,3 +19,7 @@ export async function chooseOpenPath(defaultPath) {
 export async function printPdf(fileName) {
     return await ipcRenderer.invoke('printPdf', fileName)
 }
+
+export function openPath(filePath) {
+    ipcRenderer.invoke('open-path', filePath)
+}

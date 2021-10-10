@@ -5,10 +5,13 @@ import {checkFileWritable} from '../../utils'
 import {openPath} from '../../../bridges/utils'
 
 export async function orderExcelExportAction(
+    sheetName,
+    predefinedContents,
+    orderCellPosition,
+    orderItemsHeader,
     orderData,
     templatePath,
-    orderCellPosition,
-    orderSheetName,
+
     exportName,
     exportPath
 ) {
@@ -23,63 +26,148 @@ export async function orderExcelExportAction(
     }
     const workbook = new Workbook()
 
-    await workbook.xlsx.readFile(templatePath)
+    // await workbook.xlsx.readFile(templatePath)
     workbook.creator = 'kevin Wang'
     workbook.subject = 'order'
-    const orderSheet = workbook.getWorksheet(orderSheetName)
+    const orderSheet = workbook.addWorksheet(sheetName, {
+        pageSetup: {
+            paperSize: 9,
+            orientation: 'portrait',
+            margins: {
+                left: 0.25,
+                right: 0.25,
+                top: 0.75,
+                bottom: 0.75,
+                header: 0.3,
+                footer: 0.3,
+            },
+        },
+        views: [
+            {
+                style: 'pageBreakPreview',
+                showGridLines: false,
+            },
+        ],
+        properties: {
+            defaultColWidth: 15,
+        },
+    })
+    sheetLoadPredefinedContents(orderSheet, predefinedContents)
     writeSupplier(orderSheet, orderData.supplier, orderCellPosition)
     writeOrder(orderSheet, orderData, orderCellPosition)
-    writeOrderItems(orderSheet, orderData.orderItems, orderCellPosition)
+    writeOrderItems(
+        orderSheet,
+        orderItemsHeader,
+        orderData.orderItems,
+        orderCellPosition
+    )
     await saveFile(workbook, orderData.orderNo, exportPath)
+}
+
+function sheetLoadPredefinedContents(sheet, predefinedContents) {
+    // load cell contents
+    if (predefinedContents.cells) {
+        const {cells} = predefinedContents
+        for (const [key, valueObject] of Object.entries(cells)) {
+            const cell = sheet.getCell(key)
+            for (const [propertyKey, property] of Object.entries(valueObject))
+                cell[propertyKey] = property
+        }
+    }
+
+    if (predefinedContents.mergeCells) {
+        const {mergeCells} = predefinedContents
+        for (const element of mergeCells) {
+            sheet.mergeCells(element)
+        }
+    }
 }
 
 function writeSupplier(orderSheet, supplierInfo, orderCellPosition) {
     orderSheet.getCell(orderCellPosition.supplierName).value = supplierInfo.name
     orderSheet.getCell(orderCellPosition.supplierContact).value =
         supplierInfo.contact
-    orderSheet.getCell(
-        orderCellPosition.supplierPhone
-    ).value = `${supplierInfo.cellphone}/${supplierInfo.telephone}`
+    let phoneInfo
+    if (supplierInfo.cellphone) {
+        if (supplierInfo.telephone) {
+            phoneInfo = `${supplierInfo.cellphone}/${supplierInfo.telephone}`
+        } else {
+            phoneInfo = supplierInfo.cellphone
+        }
+    } else {
+        phoneInfo = supplierInfo.telephone
+    }
+    orderSheet.getCell(orderCellPosition.supplierPhone).value = phoneInfo
 }
 
 function writeOrder(orderSheet, orderData, orderCellPosition) {
     orderSheet.getCell(orderCellPosition.orderNo).value = orderData.orderNo
 }
 
-function writeOrderItems(orderSheet, orderItemsData, orderCellPosition) {
+function writeOrderItems(
+    orderSheet,
+    orderItemsHeader,
+    orderItemsData,
+    orderCellPosition
+) {
     const startCell = orderSheet.getCell(orderCellPosition.orderItemsRef)
-    orderSheet.addTable({
-        name: 'orderItemsTable',
-        ref: orderCellPosition.orderItemsRef,
-        headerRow: true,
-        totalsRow: true,
-        columns: [
-            {name: '产品型号', filterButton: false},
-            {name: '名称', filterButton: false},
-            {name: '描述', filterButton: false},
-            // { name: '详情', filterButton: false },
-            {name: '价格', filterButton: false},
-            {name: '数量', filterButton: false},
-            {name: '金额', filterButton: false, totalsRowFunction: 'sum'},
-        ],
-        rows: orderItemsData.map((orderItemData, index) => {
-            const priceAddress = orderSheet.getCell(
-                startCell.row + index + 1,
-                startCell.col + 3
-            ).address
-            const quantityAddress = orderSheet.getCell(
-                startCell.row + index + 1,
-                startCell.col + 4
-            ).address
-            return [
-                orderItemData.productNo,
-                orderItemData.productName,
-                orderItemData.description,
-                orderItemData.price,
-                orderItemData.quantity,
-                {formula: `product(${priceAddress},${quantityAddress})`},
-            ]
-        }),
+    // write order Items header
+    orderItemsHeader.forEach((headData, index) => {
+        const cell = orderSheet.getCell(startCell.row, startCell.col + index)
+        cell.value = headData
+        cell.style = {
+            alignment: {horizontal: 'center'},
+            border: {
+                top: {style: 'thin'},
+                left: {style: 'thin'},
+                bottom: {style: 'thin'},
+                right: {style: 'thin'},
+            },
+            fill: {
+                type: 'pattern',
+                pattern: 'solid',
+                fgColor: {argb: 'ffCCE5FF'},
+            },
+        }
+    })
+
+    // write each orderItems in a row
+    orderItemsData.forEach((orderItemData, index) => {
+        const productNoCell = orderSheet.getCell(
+            startCell.row + index + 1,
+            startCell.col
+        )
+        const productNameCell = orderSheet.getCell(
+            startCell.row + index + 1,
+            startCell.col + 1
+        )
+        const descriptionCell = orderSheet.getCell(
+            startCell.row + index + 1,
+            startCell.col + 2
+        )
+
+        const priceCell = orderSheet.getCell(
+            startCell.row + index + 1,
+            startCell.col + 3
+        )
+        const quantityCell = orderSheet.getCell(
+            startCell.row + index + 1,
+            startCell.col + 4
+        )
+        const amountCell = orderSheet.getCell(
+            startCell.row + index + 1,
+            startCell.col + 5
+        )
+
+        productNoCell.value = orderItemData.productNo
+        productNameCell.value = orderItemData.productName
+        descriptionCell.value = orderItemData.description
+        priceCell.value = orderItemData.price
+        quantityCell.value = orderItemData.quantity
+        amountCell.value = {
+            formula: `product(${priceCell.address},${quantityCell.address})`,
+            result: orderItemData.price * orderItemData.quantity,
+        }
     })
 }
 

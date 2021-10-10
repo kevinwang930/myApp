@@ -26,7 +26,7 @@
     * build exe封装文件存储路径
 
 ## 可执行文件安装
-win10 x64 可直接从relase界面下载。 能力有限只有windows X64 版本。
+win10 x64 可直接从![relase界面](https://github.com/kevinwang930/myApp/releases)下载。 能力有限只有windows X64 版本。
 
 ## 源代码安装
   

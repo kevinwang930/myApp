@@ -378,21 +378,21 @@ export const OrderDetailView = () => {
         )
     }
 
-    const layout = {
-        labelCol: {
-            offset: 1,
-            span: 2,
-        },
-        wrapperCol: {
-            span: 10,
-        },
-    }
-    const tailLayout = {
-        wrapperCol: {
-            offset: 5,
-            span: 10,
-        },
-    }
+    // const layout = {
+    //     labelCol: {
+    //         offset: 1,
+    //         span: 2,
+    //     },
+    //     wrapperCol: {
+    //         span: 10,
+    //     },
+    // }
+    // const tailLayout = {
+    //     wrapperCol: {
+    //         offset: 5,
+    //         span: 10,
+    //     },
+    // }
     return (
         <div className="mx-8">
             <div className="flex">

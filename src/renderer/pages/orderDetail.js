@@ -1,6 +1,6 @@
 import React from 'react'
 import {OrderDetailView} from '../components/orderDetailView'
 
-export function OrderDetail(props) {
+export function OrderDetail() {
     return <OrderDetailView />
 }

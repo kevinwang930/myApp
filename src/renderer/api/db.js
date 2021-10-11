@@ -121,6 +121,9 @@ export const getOrderTotalAmount = async (id) => {
 		`
             )
             .get()
+        if (!result) {
+            return 0
+        }
         return result.totalAmount
     } catch (e) {
         log.error('get total amount failed', e.message)

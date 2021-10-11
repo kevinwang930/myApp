@@ -409,8 +409,9 @@ export const OrderDetailView = () => {
                 validateTrigger="onBlur"
             >
                 <div className="flex items-baseline">
-                    <div>供应商名称: {supplier?.name}</div>
-                    <div className="w-2/12" />
+                    <div className="w-1/12" />
+                    <div className="w-2/12">供应商名称: {supplier?.name}</div>
+                    <div className="w-4/12" />
                     <FormItem
                         label="订单编号"
                         name="orderNo"

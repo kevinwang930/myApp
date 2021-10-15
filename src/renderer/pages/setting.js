@@ -28,6 +28,7 @@ import {
     sqlite_backup,
 } from '../api/db'
 import {clearStoreAndFetchData} from '../app/store'
+import './setting.css'
 
 // import {getOutputPath} from ''
 
@@ -123,11 +124,15 @@ export function Setting() {
     return (
         <div>
             <SettingBox description="设置">
-                <Button onClick={onReset}>恢复默认</Button>
-                <br />
-                <Button onClick={onClear}>清除所有设置</Button>
-                <br />
-                <Button onClick={openSettingFile}>打开配置文件</Button>
+                <Button onClick={onReset} className="settingButton">
+                    恢复默认
+                </Button>
+                <Button onClick={onClear} className="settingButton">
+                    清除所有设置
+                </Button>
+                <Button onClick={openSettingFile} className="settingButton">
+                    打开配置文件
+                </Button>
                 <PathSetting
                     description="输出路径"
                     initPathString={initOutputPath}
@@ -136,12 +141,18 @@ export function Setting() {
             </SettingBox>
 
             <SettingBox description="sqlite">
-                <Button onClick={onSqliteReset}>重置</Button>
-                <br />
-                <Button onClick={onSqliteBackup}>备份</Button>
-                <br />
-                <Button onClick={onSqliteDump}>Dump</Button>
-                <Button onClick={onSqliteReadDump}>读取Dump</Button>
+                <Button className="settingButton" onClick={onSqliteReset}>
+                    重置
+                </Button>
+                <Button className="settingButton" onClick={onSqliteBackup}>
+                    备份
+                </Button>
+                <Button className="settingButton" onClick={onSqliteDump}>
+                    Dump
+                </Button>
+                <Button className="settingButton" onClick={onSqliteReadDump}>
+                    读取Dump
+                </Button>
                 <PathSetting
                     description="存储路径"
                     initPathString={initSqlitePath}
@@ -149,7 +160,12 @@ export function Setting() {
                 />
             </SettingBox>
             <SettingBox description="python服务">
-                <Button onClick={restartPythonService}>重启python服务</Button>
+                <Button
+                    className="settingButton"
+                    onClick={restartPythonService}
+                >
+                    重启python服务
+                </Button>
             </SettingBox>
         </div>
     )

@@ -1,10 +1,6 @@
 import React, {useState, useRef, useEffect} from 'react'
-import {Typography, Input, Button, message} from 'antd'
-import {log} from '../log'
+import {Input, Button, message} from 'antd'
 import {preparePathInputResult, validatePath} from '../utils'
-import {SettingBox} from './settingBox'
-
-const {Text} = Typography
 
 export function PathSetting({description, initPathString, onPathSave}) {
     const inputRef = useRef()
@@ -42,11 +38,14 @@ export function PathSetting({description, initPathString, onPathSave}) {
     }
 
     return (
-        <Input
-            addonBefore={description}
-            addonAfter={<Button onClick={onSave}>保存</Button>}
-            onChange={onChange}
-            ref={inputRef}
-        />
+        <div style={{display: 'flex'}}>
+            <Input
+                addonBefore={<div style={{width: '94px'}}>{description}</div>}
+                // addonAfter={<Button onClick={onSave}>保存</Button>}
+                onChange={onChange}
+                ref={inputRef}
+            />
+            <Button onClick={onSave}>保存</Button>
+        </div>
     )
 }

@@ -71,7 +71,7 @@ const createWindow = async () => {
         show: true,
         width: 1024,
         height: 728,
-        icon: iconPath,
+        // icon: iconPath,
         webPreferences: {
             nodeIntegration: true,
             contextIsolation: false,

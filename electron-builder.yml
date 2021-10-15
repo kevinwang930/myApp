@@ -39,7 +39,7 @@ win:
 #     },
 directories:
     # app: "release/app"
-    buildResources: "assets"
+    # buildResources: "assets"
     output: "release/build"
 extraResources:
     - "./assets/**"

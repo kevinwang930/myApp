@@ -12,9 +12,9 @@
   "scripts": {
     "archive": "git archive --format=zip --output=archive/latest.zip main",
     "build": "node ./buildConfig/scripts/prepare-build.js && concurrently npm:build:main npm:build:renderer npm:build:pythonService",
-    "build:main": "cross-env NODE_ENV=production webpack --config ./buildConfig/configs/webpack.config.main.prod.js",
+    "build:main": "webpack --config ./buildConfig/configs/webpack.config.main.prod.js",
     "build:pythonService": "conda activate electron && pyinstaller -D -y -n pythonService --distpath pythonBuild/dist --workpath pythonBuild --specpath pythonBuild src/pythonService/async_server.py  ",
-    "build:renderer": "cross-env NODE_ENV=production webpack --config ./buildConfig/configs/webpack.config.renderer.prod.js",
+    "build:renderer": "webpack --config ./buildConfig/configs/webpack.config.renderer.prod.js",
     "postinstall": "electron-builder install-app-deps",
     "package": "npm run build && electron-builder build --publish never",
     "publish": "node ./buildConfig/scripts/prepare-publish.js && npm run build && electron-builder build  --win --x64  --publish always",
@@ -22,7 +22,7 @@
     "start": "conda activate electron && node ./buildConfig/scripts/check-port-in-use.js && npm run start:renderer",
     "start:main": "cross-env NODE_ENV=development electron  ./src/main/main.js",
     "start:main:debug": "cross-env NODE_ENV=development electron  ./src/main/main.js --remote-debugging-port=9222",
-    "start:renderer": "cross-env NODE_ENV=development webpack serve --config ./buildConfig/configs/webpack.config.renderer.dev.js",
+    "start:renderer": "webpack serve --config ./buildConfig/configs/webpack.config.renderer.dev.js",
     "test": "jest"
   },
   "jest": {

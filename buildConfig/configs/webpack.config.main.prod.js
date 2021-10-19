@@ -9,10 +9,10 @@ const TerserPlugin = require('terser-webpack-plugin')
 const {BundleAnalyzerPlugin} = require('webpack-bundle-analyzer')
 const baseConfig = require('./webpack.config.base')
 const webpackPaths = require('./webpack.paths')
-const checkNodeEnv = require('../scripts/check-node-env')
+// const checkNodeEnv = require('../scripts/check-node-env')
 const deleteSourceMaps = require('../scripts/delete-source-maps')
 
-checkNodeEnv('production')
+// checkNodeEnv('production')
 deleteSourceMaps()
 
 const devtoolsConfig =

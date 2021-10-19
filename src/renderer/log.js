@@ -3,6 +3,12 @@ import electronLog from 'electron-log'
 
 export let log
 export let sqliteLog
+let logLevel
+if (process.env.NODE_ENV === 'development') {
+    logLevel = 'debug'
+} else {
+    logLevel = 'info'
+}
 if (process.env.JEST) {
     log = console
     sqliteLog = console
@@ -13,7 +19,7 @@ if (process.env.JEST) {
     // process.env.LOG_LEVEL.toLowerCase()
     // log.transports.console.format = '[{h}:{i}:{s}] [renderer] [{level}] {text}'
     if (log.transports.ipc) {
-        log.transports.ipc.level = process.env.LOG_LEVEL.toLowerCase()
+        log.transports.ipc.level = logLevel.toLowerCase()
     }
 
     sqliteLog = electronLog.create('sqliteLog')
@@ -22,6 +28,6 @@ if (process.env.JEST) {
     // process.env.LOG_LEVEL.toLowerCase()
     // log.transports.console.format = '[{h}:{i}:{s}] [renderer] [{level}] {text}'
     if (sqliteLog.transports.ipc) {
-        sqliteLog.transports.ipc.level = process.env.LOG_LEVEL.toLowerCase()
+        sqliteLog.transports.ipc.level = logLevel.toLowerCase()
     }
 }

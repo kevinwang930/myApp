@@ -19,6 +19,12 @@ log.transports.console.level = logLevel.toLowerCase()
 log.transports.console.format = '[{h}:{i}:{s}] [renderer] [{level}] {text}'
 log.transports.ipc.level = logLevel.toLowerCase()
 
+const sqliteLog = electronLog.create('sqliteLog')
+sqliteLog.transports.file.level = false
+sqliteLog.transports.console.level = logLevel.toLowerCase()
+sqliteLog.transports.console.format = '[{h}:{i}:{s}] [sqlite] [{level}] {text}'
+sqliteLog.transports.ipc.level = logLevel.toLowerCase()
+
 const mainLog = electronLog.create('mainLog')
 mainLog.transports.file.level = false
 mainLog.transports.ipc.level = false

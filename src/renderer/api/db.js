@@ -3,7 +3,7 @@ import {execSync} from 'child_process'
 import path from 'path'
 import {existsSync, unlinkSync, copyFileSync} from 'fs'
 import date from 'date-and-time'
-import {log} from '../log'
+import {sqliteLog} from '../log'
 import {
     getSqliteFilePath,
     getSqliteSchemaPath,
@@ -60,11 +60,11 @@ export function sqlite_connect(filePath = null) {
     if (!connection) {
         connection = new Database(sqliteFilePath, {
             fileMustExist: true,
-            verbose: log.debug,
+            verbose: sqliteLog.debug,
         })
-        log.debug(`sqlite connected ${sqliteFilePath}`)
+        sqliteLog.debug(`sqlite connected ${sqliteFilePath}`)
     } else {
-        log.warn(`${connection.name} already opened`)
+        sqliteLog.warn(`${connection.name} already opened`)
     }
 
     getDataVersion()
@@ -75,7 +75,7 @@ export function sqlite_disconnect() {
     if (connection) {
         connection.close()
         connection = null
-        log.debug('sqlite closed')
+        sqliteLog.debug('sqlite closed')
     }
 }
 
@@ -126,7 +126,7 @@ export const getOrderTotalAmount = async (id) => {
         }
         return result.totalAmount
     } catch (e) {
-        log.error('get total amount failed', e.message)
+        sqliteLog.error('get total amount failed', e.message)
         return Promise.reject(e.message)
     }
 }
@@ -233,7 +233,7 @@ export function getSuppliers() {
         // log.debug('get suppliers from db',suppliersText)
         return suppliers
     } catch (error) {
-        log.error('failed to get suppliers', error.message)
+        sqliteLog.error('failed to get suppliers', error.message)
         return Promise.reject(error)
     }
 }
@@ -276,7 +276,7 @@ export function getOrders() {
             }
         })
     } catch (error) {
-        log.error('failed to get orders', error.message)
+        sqliteLog.error('failed to get orders', error.message)
         return Promise.reject(error)
     }
 }
@@ -292,7 +292,7 @@ export const getOrderItems = () => {
             .all()
         return orderItems
     } catch (e) {
-        log.error('failed to get orderItems', e.message)
+        sqliteLog.error('failed to get orderItems', e.message)
         return Promise.reject(e)
     }
 }
@@ -307,7 +307,7 @@ export async function getProducts() {
         // Product.findAll({ attributes: ['id', 'name', 'productNo', 'description','supplierId'] })
         return products
     } catch (error) {
-        log.error('failed to get products', error)
+        sqliteLog.error('failed to get products', error)
         return Promise.reject(error)
     }
 }
@@ -371,7 +371,7 @@ export const deleteEntryById = async (tableName, id) => {
             )
             .run()
     } catch (e) {
-        log.debug(`delete from ${tableName} failed`, e.message)
+        sqliteLog.debug(`delete from ${tableName} failed`, e.message)
         return Promise.reject(e)
     }
 }
@@ -401,10 +401,10 @@ export function insertEntry(tableName, info) {
 		values(${values.join()},datetime('now'),datetime('now')) returning id`
             )
             .get()
-        log.debug(`insert database ${tableName} id ${row.id}`)
+        sqliteLog.debug(`insert database ${tableName} id ${row.id}`)
         info.id = row.id
     } catch (e) {
-        log.error('insert entry failed', e.message)
+        sqliteLog.error('insert entry failed', e.message)
         return Promise.reject(e)
     }
 }
@@ -425,7 +425,7 @@ export function insertEntries(tableName, infoList) {
     try {
         insertMany(infoList)
     } catch (e) {
-        log.error('insertEntries failed', e.message)
+        sqliteLog.error('insertEntries failed', e.message)
         return Promise.reject(e)
     }
 }
@@ -449,7 +449,7 @@ export async function createOrder({orderInfo, orderItemsInfo}) {
     try {
         createFn()
     } catch (e) {
-        log.error('create order failed', e.message)
+        sqliteLog.error('create order failed', e.message)
         return Promise.reject(e)
     }
 }
@@ -490,8 +490,8 @@ export function sqlite_readDump(dumpPath) {
     const buffer = execSync(
         `sqlite3 ${sqliteFilePath} ".read '${dumpPath}'" ".exit"`
     )
-    log.info(buffer.toString())
-    log.debug('dump finished')
+    sqliteLog.info(buffer.toString())
+    sqliteLog.debug('dump finished')
 }
 
 export function sqlite_backup() {

@@ -260,6 +260,7 @@ export function getOrders() {
                 orderItemIds = order.orderItemIds
                     .split(',')
                     .map((idString) => parseInt(idString))
+                    .sort((firstE, secondE) => firstE - secondE)
             } else {
                 orderItemIds = []
             }

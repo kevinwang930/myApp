@@ -1,6 +1,6 @@
 {
   "name": "my-app",
-  "version": "1.0.7",
+  "version": "1.0.5",
   "homepage": "https://github.com/kevinwang930/myApp#readme",
   "description": "electron react app for order management",
   "license": "MIT",

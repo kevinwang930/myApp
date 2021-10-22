@@ -42,13 +42,13 @@ let mainWindow = null
 const installExtensions = async () => {
     const {
         default: install,
-        // REDUX_DEVTOOLS,
+        REDUX_DEVTOOLS,
         REACT_DEVELOPER_TOOLS,
     } = require('electron-devtools-installer')
     const forceDownload = !!process.env.UPGRADE_EXTENSIONS
-    // const extensions = ['REACT_DEVELOPER_TOOLS']
+    const extensions = [REDUX_DEVTOOLS, REACT_DEVELOPER_TOOLS]
 
-    return install([REACT_DEVELOPER_TOOLS], forceDownload).catch(console.log)
+    return install(extensions, forceDownload).catch(console.log)
 }
 
 const createWindow = async () => {

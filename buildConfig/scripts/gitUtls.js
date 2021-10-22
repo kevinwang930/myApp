@@ -57,30 +57,66 @@ async function createTagFromVersion(version) {
 }
 
 async function gitEnsureTagExists() {
+    let targetPublishVersion = null
     const currentVersion = process.env.npm_package_version
     const tagList = await git.tags()
     if (!tagList.latest) {
-        await createTagFromVersion(currentVersion)
-    } else {
-        const latestTag = tagList.latest
-        const latestTagVersion = semver.clean(latestTag)
-        if (semver.gt(latestTagVersion, currentVersion)) {
-            console.log(
-                chalk.whiteBright.bgRed.bold(
-                    'latest tag version is greater thant current version, please check!'
-                )
-            )
-            process.exit(2)
-        }
-        if (latestTagVersion === currentVersion) {
-            const targetVersion = await updateToNextVersion()
-            console.log(`target publish version ${targetVersion}`)
-            // process.env.npm_package_version = targetVersion
-            // const currentTagList = await git.tags()
-            // console.log(`current tag list ${currentTagList}`)
-            await createTagFromVersion(targetVersion)
-        }
+        targetPublishVersion = currentVersion
+        await createTagFromVersion(targetPublishVersion)
+        console.log(`target publish version ${targetPublishVersion}`)
+        return
     }
+    const latestTag = tagList.latest
+    const latestTagVersion = semver.clean(latestTag)
+
+    if (latestTagVersion < currentVersion) {
+        targetPublishVersion = currentVersion
+        await createTagFromVersion(targetPublishVersion)
+        console.log(`target publish version ${targetPublishVersion}`)
+        return
+    }
+
+    if (latestTagVersion === currentVersion) {
+        const [latestReleaseVersion, latestReleaseStatus] = getLatestRelease()
+        if (latestReleaseVersion === currentVersion) {
+            if (latestReleaseStatus === 'Draft') {
+                targetPublishVersion = currentVersion
+            } else {
+                targetPublishVersion = await updateToNextVersion()
+                await createTagFromVersion(targetPublishVersion)
+            }
+            console.log(`target publish version ${targetPublishVersion}`)
+            return
+        }
+        console.log(
+            chalk.whiteBright.bgRed.bold(
+                `latest release version ${latestReleaseVersion} is greater than current version ${currentVersion}, please check!`
+            )
+        )
+        process.exit(2)
+    }
+
+    console.log(
+        chalk.whiteBright.bgRed.bold(
+            `latest tag version ${latestTagVersion} is different with current version ${currentVersion}, please check!`
+        )
+    )
+    process.exit(2)
+}
+
+function getLatestRelease() {
+    const buffer = execSync('gh release list --repo kevinwang930/myApp')
+    const resultString = buffer.toString()
+    const releaseArray = resultString.split('\n')
+    let latestOrDraftRelease = null
+    if (releaseArray.length > 0) {
+        ;[latestOrDraftRelease] = releaseArray
+    }
+    if (latestOrDraftRelease) {
+        const [version, status] = latestOrDraftRelease.split('\t')
+        return [version, status]
+    }
+    return [null, null]
 }
 
 async function postVersion() {

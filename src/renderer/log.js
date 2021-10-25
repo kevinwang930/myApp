@@ -4,7 +4,7 @@ import electronLog from 'electron-log'
 export let log
 export let sqliteLog
 let logLevel
-if (process.env.NODE_ENV === 'development') {
+if (process.env.NODE_ENV === 'development' || process.env.PROD_DEBUG) {
     logLevel = 'debug'
 } else {
     logLevel = 'info'

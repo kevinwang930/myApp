@@ -1,7 +1,7 @@
 const electronLog = require('electron-log')
 
 let logLevel
-if (process.env.NODE_ENV === 'development') {
+if (process.env.NODE_ENV === 'development' || process.env.PROD_DEBUG) {
     logLevel = 'debug'
 } else {
     logLevel = 'info'

@@ -68,4 +68,5 @@ publish:
 
 nsis:
     artifactName: ${productName}.setup.${buildVersion}.${platform}.${arch}.${ext}
+buildDependenciesFromSource: true
 
